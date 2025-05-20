@@ -9,8 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.statistics.dto.StatisticsDto;
 
-import java.util.List;
-
 @Controller
 @RequestMapping
 @RequiredArgsConstructor

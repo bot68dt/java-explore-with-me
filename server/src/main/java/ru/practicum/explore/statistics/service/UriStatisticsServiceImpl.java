@@ -54,8 +54,7 @@ public class UriStatisticsServiceImpl implements UriStatisticsService {
             if (unique) {
                 checkUniqueHits = uniqueHitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByUniqueDesc(uri, start, end);
                 checkUniqueHits.ifPresent(uniqueHitsStatistics -> collection.add(UriStatisticsMapperNew.mapToUniqueHitStatistics(uniqueHitsStatistics)));
-            }
-            else {
+            } else {
                 chekHits = hitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByHitsDesc(uri, start, end);
                 chekHits.ifPresent(uniqueHitsStatistics -> collection.add(UriStatisticsMapperNew.mapToHitStatistics(uniqueHitsStatistics)));
             }

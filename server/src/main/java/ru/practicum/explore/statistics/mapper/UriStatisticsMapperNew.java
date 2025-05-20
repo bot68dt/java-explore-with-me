@@ -51,7 +51,7 @@ public class UriStatisticsMapperNew {
         uriStatistics.setIp(stat.getIp());
         uriStatistics.setTimestamp(stat.getTime());
         uriStatistics.setHits(stat.getHits());
-        uriStatistics.setUnique_hits(stat.getUnique());
+        uriStatistics.setUnique(stat.getUnique());
         return uriStatistics;
     }
 

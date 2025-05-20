@@ -18,5 +18,5 @@ public class UriStatisticsDtoWithHits {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
     private Long hits;
-    private Long unique_hits;
+    private Long unique;
 }

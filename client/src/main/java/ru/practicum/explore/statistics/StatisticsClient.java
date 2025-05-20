@@ -8,30 +8,26 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explore.client.BaseClient;
-import ru.practicum.explore.statistics.dto.UserDto;
+import ru.practicum.explore.statistics.dto.StatisticsDto;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
-public class UserClient extends BaseClient {
-    private static final String API_PREFIX = "/users";
+public class StatisticsClient extends BaseClient {
+    private static final String API_PREFIX = "/";
 
     @Autowired
-    public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public StatisticsClient(@Value("${explore-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX)).requestFactory(() -> new HttpComponentsClientHttpRequestFactory()).build());
     }
 
-    public ResponseEntity<Object> getUserById(long userId) {
-        return get("/" + userId);
+    public ResponseEntity<Object> getUris(String start, String end, String uris, boolean unique) {
+        Map<String, Object> parameters = Map.of("start", start, "end", end, "uris", uris, "unique", unique);
+        return get("stats?start={start}&end={end}&uris={uris}&unique={unique}", null, parameters);
     }
 
-    public ResponseEntity<Object> addUser(UserDto requestDto) {
-        return post("", requestDto);
-    }
-
-    public ResponseEntity<Object> updateUser(long userId, UserDto requestDto) {
-        return patch("/" + userId, requestDto);
-    }
-
-    public ResponseEntity<Object> deleteUser(long userId) {
-        return delete("/" + userId);
+    public ResponseEntity<Object> addUri(StatisticsDto requestDto) {
+        return post("hit", requestDto);
     }
 }

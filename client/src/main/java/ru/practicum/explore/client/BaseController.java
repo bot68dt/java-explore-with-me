@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 @Slf4j
-public class BaceController {
+public class BaseController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Exception> handleValidException(final RuntimeException e) {
         log.warn("Encountered {}: returning 400 Internal Server Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());

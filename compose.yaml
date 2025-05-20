@@ -1,4 +1,15 @@
 services:
+  ewm-service:
+    build: client
+    image: explore-client
+    container_name: explore-client
+    ports:
+      - "8080:8080"
+    depends_on:
+      - stats-server
+    environment:
+      - EXPLORE_SERVER_URL=http://server:9090
+
   stats-server:
     build: server
     image: explore-server

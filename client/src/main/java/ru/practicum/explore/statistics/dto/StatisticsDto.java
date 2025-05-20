@@ -1,6 +1,5 @@
 package ru.practicum.explore.statistics.dto;
 
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class StatisticsDto {
     private Long id;
-    @Email(message = "E-mail must be valid.")
-    private String email;
-    private String name;
+    private String app;
+    private String uri;
+    private String ip;
+    private String timestamp;
 }

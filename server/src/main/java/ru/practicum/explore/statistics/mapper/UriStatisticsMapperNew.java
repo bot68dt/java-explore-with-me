@@ -9,9 +9,6 @@ import ru.practicum.explore.statistics.model.HitsStatistics;
 import ru.practicum.explore.statistics.model.Statistics;
 import ru.practicum.explore.statistics.model.UniqueHitsStatistics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UriStatisticsMapperNew {
 
@@ -21,26 +18,6 @@ public class UriStatisticsMapperNew {
 
     public static HitStatisticsDto mapToUniqueHitStatistics(UniqueHitsStatistics uriStatistics) {
         return new HitStatisticsDto(uriStatistics.getApp(), uriStatistics.getUri(), uriStatistics.getUnique());
-    }
-
-    public static List<HitStatisticsDto> mapToHitStatistics(Iterable<HitsStatistics> stats) {
-        List<HitStatisticsDto> result = new ArrayList<>();
-
-        for (HitsStatistics uriStatistics : stats) {
-            result.add(mapToHitStatistics(uriStatistics));
-        }
-
-        return result;
-    }
-
-    public static List<HitStatisticsDto> mapToUniqueHitStatistics(Iterable<UniqueHitsStatistics> stats) {
-        List<HitStatisticsDto> result = new ArrayList<>();
-
-        for (UniqueHitsStatistics uriStatistics : stats) {
-            result.add(mapToUniqueHitStatistics(uriStatistics));
-        }
-
-        return result;
     }
 
     public static UriStatisticsDtoWithHits mapToNewUriStatisticsDtoWithHits(Statistics stat) {

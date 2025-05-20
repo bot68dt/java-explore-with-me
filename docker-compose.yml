@@ -1,16 +1,16 @@
 services:
-  gateway:
-    build: gateway
-    image: explore-gateway
-    container_name: explore-gateway
+  ewm-service:
+    build: client
+    image: explore-client
+    container_name: explore-client
     ports:
       - "8080:8080"
     depends_on:
-      - server
+      - stats-server
     environment:
       - EXPLORE_SERVER_URL=http://server:9090
 
-  server:
+  stats-server:
     build: server
     image: explore-server
     container_name: explore-server

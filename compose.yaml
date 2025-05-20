@@ -1,13 +1,37 @@
 services:
+  ewm-service:
+    build: gateway
+    image: explore-gateway
+    container_name: explore-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - server
+    environment:
+      - EXPLORE_SERVER_URL=http://server:9090
+
+  stats-server:
+    build: server
+    image: explore-server
+    container_name: explore-server
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/explore
+      - SPRING_DATASOURCE_USERNAME=explore
+      - SPRING_DATASOURCE_PASSWORD=explore
+
   db:
     image: postgres:16.1
     container_name: postgres
     ports:
-      - "9090:9090"
+      - "6541:5432"
     environment:
-      - POSTGRES_DB=explore
-      - POSTGRES_USER=explore
       - POSTGRES_PASSWORD=explore
+      - POSTGRES_USER=explore
+      - POSTGRES_DB=explore
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s

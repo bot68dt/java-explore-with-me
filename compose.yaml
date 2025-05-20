@@ -1,15 +1,4 @@
 services:
-  ewm-service:
-    build: gateway
-    image: explore-gateway
-    container_name: explore-gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - stats-server
-    environment:
-      - EXPLORE_SERVER_URL=http://server:9090
-
   stats-server:
     build: server
     image: explore-server

@@ -66,10 +66,10 @@ public class UriStatisticsServiceImpl implements UriStatisticsService {
     @Override
     @Transactional
     public UriStatisticsDtoWithHits addUriStatistics(UriStatisticsDto uriStatistics) {
-        Optional<Statistics> statistics = uriStatisticsRepository.findFirst1ByUriAndAppAndIpOrderByTimeDesc(uriStatistics.getUri(), uriStatistics.getApp(), uriStatistics.getIp());
+        Optional<Statistics> statistics = uriStatisticsRepository.findFirst1ByUriAndAppAndIpOrderByHitsDesc(uriStatistics.getUri(), uriStatistics.getApp(), uriStatistics.getIp());
         UriStatisticsDtoWithHits stat;
         if (statistics.isEmpty()) {
-            statistics = uriStatisticsRepository.findFirst1ByUriAndAppOrderByTimeDesc(uriStatistics.getUri(), uriStatistics.getApp());
+            statistics = uriStatisticsRepository.findFirst1ByUriAndAppOrderByHitsDesc(uriStatistics.getUri(), uriStatistics.getApp());
             if (statistics.isEmpty())
                 stat = UriStatisticsMapperNew.mapToNewUriStatisticsDtoWithHits(uriStatisticsRepository.saveAndFlush(UriStatisticsMapperNew.mapToNewUriStatistics(uriStatistics, 1L, 1L)));
             else

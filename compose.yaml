@@ -3,7 +3,7 @@ services:
     image: postgres:16.1
     container_name: postgres
     ports:
-      - "5432:5432"
+      - "9090:9090"
     environment:
       - POSTGRES_DB=explore
       - POSTGRES_USER=explore

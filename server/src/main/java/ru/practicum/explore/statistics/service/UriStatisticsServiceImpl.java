@@ -4,15 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.statistics.dto.HitStatisticsDto;
-import ru.practicum.explore.statistics.dto.UriStatisticsDto;
-import ru.practicum.explore.statistics.dto.UriStatisticsDtoWithHits;
+import ru.practicum.explore.statistics.dto.*;
 import ru.practicum.explore.statistics.mapper.UriStatisticsMapperNew;
-import ru.practicum.explore.statistics.model.HitsStatistics;
 import ru.practicum.explore.statistics.model.Statistics;
-import ru.practicum.explore.statistics.model.UniqueHitsStatistics;
-import ru.practicum.explore.statistics.repository.HitStatisticsRepository;
-import ru.practicum.explore.statistics.repository.UniqueHitStatisticsRepository;
 import ru.practicum.explore.statistics.repository.UriStatisticsRepository;
 
 import java.time.LocalDateTime;
@@ -28,35 +22,27 @@ import java.util.Optional;
 public class UriStatisticsServiceImpl implements UriStatisticsService {
 
     private final UriStatisticsRepository uriStatisticsRepository;
-    private final HitStatisticsRepository hitStatisticsRepository;
-    private final UniqueHitStatisticsRepository uniqueHitStatisticsRepository;
 
     @Override
     public List<HitStatisticsDto> getUriStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<HitStatisticsDto> collection = new ArrayList<>();
         if (uris.isEmpty()) {
-            uris = uriStatisticsRepository.findAllUris(start, end);
-            if (unique) {
-                for (String uri : uris) {
-                    collection.add(UriStatisticsMapperNew.mapToUniqueHitStatistics(uniqueHitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByUniqueDesc(uri, start, end).get()));
-                }
-            } else {
-                for (String uri : uris) {
-                    collection.add(UriStatisticsMapperNew.mapToHitStatistics(hitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByHitsDesc(uri, start, end).get()));
-                }
-            }
+            if (unique)
+                collection.addAll(UriStatisticsMapperNew.mapToHitStatistics(uriStatisticsRepository.findAllUniqueUris(start, end)));
+            else
+                collection.addAll(UriStatisticsMapperNew.mapToHitStatistics(uriStatisticsRepository.findAllUris(start, end)));
             collection.sort(Comparator.comparing(HitStatisticsDto::getHits).reversed());
             return collection;
         }
-        Optional<UniqueHitsStatistics> checkUniqueHits;
-        Optional<HitsStatistics> chekHits;
+        Optional<List<Object[]>> checkUniqueHits;
+        Optional<List<Object[]>> chekHits;
         for (String uri : uris) {
             if (unique) {
-                checkUniqueHits = uniqueHitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByUniqueDesc(uri, start, end);
-                checkUniqueHits.ifPresent(uniqueHitsStatistics -> collection.add(UriStatisticsMapperNew.mapToUniqueHitStatistics(uniqueHitsStatistics)));
+                checkUniqueHits = uriStatisticsRepository.findMentionedUniqueUris(start, end, uri);
+                checkUniqueHits.ifPresent(HitsStatistics -> collection.addAll(UriStatisticsMapperNew.mapToHitStatistics(HitsStatistics)));
             } else {
-                chekHits = hitStatisticsRepository.findFirst1ByUriAndTimeGreaterThanEqualAndTimeLessThanEqualOrderByHitsDesc(uri, start, end);
-                chekHits.ifPresent(uniqueHitsStatistics -> collection.add(UriStatisticsMapperNew.mapToHitStatistics(uniqueHitsStatistics)));
+                chekHits = uriStatisticsRepository.findMentionedUris(start, end, uri);
+                chekHits.ifPresent(uniqueHitsStatistics -> collection.addAll(UriStatisticsMapperNew.mapToHitStatistics(uniqueHitsStatistics)));
             }
         }
         collection.sort(Comparator.comparing(HitStatisticsDto::getHits).reversed());

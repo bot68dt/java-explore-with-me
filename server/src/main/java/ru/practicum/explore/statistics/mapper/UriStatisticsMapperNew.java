@@ -2,22 +2,27 @@ package ru.practicum.explore.statistics.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.explore.statistics.dto.HitStatisticsDto;
-import ru.practicum.explore.statistics.dto.UriStatisticsDto;
-import ru.practicum.explore.statistics.dto.UriStatisticsDtoWithHits;
-import ru.practicum.explore.statistics.model.HitsStatistics;
+import ru.practicum.explore.statistics.dto.*;
 import ru.practicum.explore.statistics.model.Statistics;
-import ru.practicum.explore.statistics.model.UniqueHitsStatistics;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UriStatisticsMapperNew {
 
-    public static HitStatisticsDto mapToHitStatistics(HitsStatistics uriStatistics) {
-        return new HitStatisticsDto(uriStatistics.getApp(), uriStatistics.getUri(), uriStatistics.getHits());
+    public static HitStatisticsDto mapToHitStatistics(Object[] uriStatistics) {
+        return new HitStatisticsDto((String)uriStatistics[1], (String)uriStatistics[0], (Long)uriStatistics[2]);
     }
 
-    public static HitStatisticsDto mapToUniqueHitStatistics(UniqueHitsStatistics uriStatistics) {
-        return new HitStatisticsDto(uriStatistics.getApp(), uriStatistics.getUri(), uriStatistics.getUnique());
+    public static List<HitStatisticsDto> mapToHitStatistics(Iterable<Object[]> statistics) {
+        List<HitStatisticsDto> result = new ArrayList<>();
+
+        for ( Object[] stat : statistics) {
+            result.add(mapToHitStatistics(stat));
+        }
+
+        return result;
     }
 
     public static UriStatisticsDtoWithHits mapToNewUriStatisticsDtoWithHits(Statistics stat) {
@@ -26,7 +31,7 @@ public class UriStatisticsMapperNew {
         uriStatistics.setApp(stat.getApp());
         uriStatistics.setUri(stat.getUri());
         uriStatistics.setIp(stat.getIp());
-        uriStatistics.setTimestamp(stat.getTime());
+        uriStatistics.setTimestamp(stat.getTimestamp());
         uriStatistics.setHits(stat.getHits());
         uriStatistics.setUnique(stat.getUnique());
         return uriStatistics;
@@ -38,7 +43,7 @@ public class UriStatisticsMapperNew {
         uriStatistics.setApp(stat.getApp());
         uriStatistics.setUri(stat.getUri());
         uriStatistics.setIp(stat.getIp());
-        uriStatistics.setTime(stat.getTimestamp());
+        uriStatistics.setTimestamp(stat.getTimestamp());
         uriStatistics.setHits(hits);
         uriStatistics.setUnique(uniqueHits);
         return uriStatistics;

@@ -25,9 +25,9 @@ public class Statistics {
     @Column(name = "ip", nullable = false)
     private String ip;
 
-    @Column(name = "time", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime time;
+    @Column(name = "timestamp", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;
 
     @Column(name = "hits", nullable = false)
     private Long hits;

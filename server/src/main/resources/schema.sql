@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS stats (
     uri VARCHAR(255) NOT NULL,
     app VARCHAR(255) NOT NULL,
     ip VARCHAR(100) NOT NULL,
-    time timestamp NOT NULL,
+    timestamp timestamp NOT NULL,
     hits BIGINT NOT NULL,
     unique_hits BIGINT NOT NULL
 );

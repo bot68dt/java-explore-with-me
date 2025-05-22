@@ -12,13 +12,13 @@ import java.util.List;
 public class UriStatisticsMapperNew {
 
     public static HitStatisticsDto mapToHitStatistics(Object[] uriStatistics) {
-        return new HitStatisticsDto((String)uriStatistics[1], (String)uriStatistics[0], (Long)uriStatistics[2]);
+        return new HitStatisticsDto((String) uriStatistics[1], (String) uriStatistics[0], (Long) uriStatistics[2]);
     }
 
     public static List<HitStatisticsDto> mapToHitStatistics(Iterable<Object[]> statistics) {
         List<HitStatisticsDto> result = new ArrayList<>();
 
-        for ( Object[] stat : statistics) {
+        for (Object[] stat : statistics) {
             result.add(mapToHitStatistics(stat));
         }
 

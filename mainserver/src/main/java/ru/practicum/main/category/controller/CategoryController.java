@@ -1,0 +1,56 @@
+package ru.practicum.main.category.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.practicum.main.category.dto.CategoryDto;
+import ru.practicum.main.category.dto.CategoryDtoWithId;
+import ru.practicum.main.category.service.CategoryService;
+
+import java.net.URI;
+import java.util.Collection;
+
+@RestController
+@RequestMapping
+@Slf4j
+@RequiredArgsConstructor
+public class CategoryController {
+
+    private final CategoryService categoryService;
+
+    @GetMapping("/categories/{catId}")
+    public ResponseEntity<CategoryDtoWithId> getCategory(@PathVariable long catId) {
+        log.info("Request to get category with ID {} received.", catId);
+        return ResponseEntity.ok().body(categoryService.getCategory(catId));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<Collection<CategoryDtoWithId>> getAllCategories(@RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+        log.info("Request to get all categories received.");
+        return ResponseEntity.ok(categoryService.getAllCategories(from, size));
+    }
+
+    @PatchMapping("/admin/categories/{catId}")
+    public ResponseEntity<CategoryDtoWithId> changeCategory(@PathVariable long catId, @RequestBody CategoryDto categoryDto) {
+        log.info("Request to change category {} received.", categoryDto);
+        return ResponseEntity.ok().body(categoryService.changeCategory(catId, categoryDto));
+    }
+
+    @DeleteMapping("/admin/categories/{catId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable long catId) {
+        log.info("Request to delete category with ID {} received.", catId);
+        categoryService.deleteCategory(catId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/admin/categories")
+    public ResponseEntity<CategoryDtoWithId> createCategory(@RequestBody CategoryDto categoryDto) {
+        log.info("Request to create new category received: {}", categoryDto);
+        CategoryDtoWithId categoryDtoWithId = categoryService.createCategory(categoryDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryDtoWithId.getId()).toUri();
+        log.info("New category created with ID {}", categoryDtoWithId.getId());
+        return ResponseEntity.created(location).body(categoryDtoWithId);
+    }
+}

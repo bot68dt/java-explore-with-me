@@ -1,0 +1,26 @@
+package ru.practicum.main.user.service;
+
+import ru.practicum.main.user.dto.ChangedStatusOfRequestsDto;
+import ru.practicum.main.user.dto.RequestDto;
+import ru.practicum.main.user.dto.UserDto;
+
+import java.util.Collection;
+import java.util.List;
+
+public interface UserService {
+    Collection<RequestDto> getUserRequests(long userId);
+
+    Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size);
+
+    RequestDto cancelRequest(long userId, long requestId);
+
+    void deleteUser(long userId);
+
+    RequestDto createRequest(long userId, long eventId);
+
+    UserDto createUser(UserDto userDto);
+
+    Collection<RequestDto> getEventRequests(long userId, long eventId);
+
+    Collection<RequestDto> changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto);
+}

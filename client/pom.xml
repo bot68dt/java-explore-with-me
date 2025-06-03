@@ -75,9 +75,13 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+           <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>ru.practicum.explore.ExploreClient</mainClass>
+                <layout>JAR</layout>
+            </configuration>
             </plugin>
         </plugins>
     </build>

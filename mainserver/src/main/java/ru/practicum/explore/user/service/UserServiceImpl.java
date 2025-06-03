@@ -92,8 +92,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
-        Optional<User> email = userRepository.findByEmail(userDto.getEmail());
-        if (email.isPresent()) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+        //Optional<User> email = userRepository.findByEmail(userDto.getEmail());
+        //if (email.isPresent()) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
         User user = userRepository.saveAndFlush(UserMapperNew.mapToUser(userDto));
         return UserMapperNew.mapToUserDto(user);
     }

@@ -10,7 +10,7 @@ services:
       - main-server
     environment:
       - EXPLORE_SERVER_URL=http://server:9090
-      - MAIN_SERVER_URL=http://localhost:8085
+      - MAIN_SERVER_URL=http://mainserver:8085
 
   stats-server:
     build: server

@@ -76,6 +76,7 @@ services:
         );
         EOSQL
 
+
   maindb:
     image: postgres:16.1
     container_name: mainpostgres

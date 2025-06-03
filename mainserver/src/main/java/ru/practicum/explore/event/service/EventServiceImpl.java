@@ -100,7 +100,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto getPublishedEventById(long eventId, Integer views) {
-        Optional<Event> event = eventRepository.findByIdAndPublishedOnLessThanEqual(eventId, LocalDateTime.now());
+        Optional<Event> event = eventRepository.findByIdAndState(eventId, "PUBLISHED");
         if (event.isPresent()) {
             Event updated = event.get();
             updated.setViews(Long.valueOf(views));

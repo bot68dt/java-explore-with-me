@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDtoWithId changeCategory(long catId, CategoryDto categoryDto) {
         Optional<Category> category = categoryRepository.findById(catId);
         Optional<Category> name = categoryRepository.findByName(categoryDto.getName());
-        if (name.isPresent()) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+        if (name.isPresent() && !category.get().getId().equals(catId)) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
         if (category.isPresent())
             return CategoryMapperNew.mapToCategoryDtoWithId(categoryRepository.saveAndFlush(CategoryMapperNew.mapToCategory(category.get(), categoryDto)));
         else throw new EntityNotFoundException();

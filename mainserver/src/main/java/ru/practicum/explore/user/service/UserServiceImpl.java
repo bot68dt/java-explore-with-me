@@ -80,11 +80,13 @@ public class UserServiceImpl implements UserService {
         Optional<Event> event = eventRepository.findById(eventId);
         Optional<User> user = userRepository.findById(userId);
         Optional<Request> request1 = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals("PUBLISHED")) || (event.isPresent() && !event.get().getParticipantLimit().equals(0)))
+        if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals("PUBLISHED")) || (event.isPresent() && Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0)))
             throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
         if (event.isPresent() && event.get().getInitiator().getId() != userId && user.isPresent()) {
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
+            if (!event.get().getRequestModeration())
+                request.setStatus("CONFIRMED");
             return UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request));
         } else throw new EntityNotFoundException();
     }

@@ -120,7 +120,7 @@ public class EventServiceImpl implements EventService {
             listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimit(paid, rangeStart, rangeEnd, 0L, page));
         }
         for (Event event : listOfEvents) {
-            if (!text.equals(" ") || text.isBlank()) {
+            if (!text.equals(" ") || !text.isBlank()) {
                 if (!categories.equals(List.of(0L)))
                     if ((event.getAnnotation().contains(text) || event.getDescription().contains(text)) && categories.contains(event.getCategory().getId()))
                         result.add(EventMapperNew.mapToResponseEventDto(event));

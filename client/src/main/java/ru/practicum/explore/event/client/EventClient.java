@@ -12,7 +12,6 @@ import ru.practicum.explore.event.dto.EventDto;
 import ru.practicum.explore.event.dto.PatchEventDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,7 +39,7 @@ public class EventClient extends BaseClient {
     }
 
     public ResponseEntity<Object> findEventsByUser(String text, Long categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of("text", text, "categories", categories, "paid", paid, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "onlyAvailable", onlyAvailable,  "sort", sort, "from", from, "size", size);
+        Map<String, Object> parameters = Map.of("text", text, "categories", categories, "paid", paid, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "onlyAvailable", onlyAvailable, "sort", sort, "from", from, "size", size);
         return get("/events?text={text}&categories={categories}&paid={paid}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&onlyAvailable={onlyAvailable}&sort={sort}&from={from}&size={size}", null, parameters);
     }
 

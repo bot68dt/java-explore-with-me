@@ -18,7 +18,7 @@ public class AdminEventClient extends BaseClient {
     private static final String API_PREFIX = "/admin";
 
     @Autowired
-    public AdminEventClient (@Value("${main-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public AdminEventClient(@Value("${main-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX)).requestFactory(() -> new HttpComponentsClientHttpRequestFactory()).build());
     }
 

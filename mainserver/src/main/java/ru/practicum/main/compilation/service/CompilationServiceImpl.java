@@ -75,7 +75,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public CompilationDto createCompilation(RequestCompilationDto requestCompilationDto) {
         List<Event> events = eventRepository.findAllById(requestCompilationDto.getEvents());
-        if (requestCompilationDto.getEvents().size() != events.size()) throw new EntityNotFoundException();
+        if (requestCompilationDto.getEvents().size() != events.size() && !requestCompilationDto.getEvents().equals(List.of(0L)))
+            throw new EntityNotFoundException();
         Compilation compilation = new Compilation();
         compilation = CompilationMapperNew.changeCompilation(compilation, requestCompilationDto);
         compilation.setEvents(events);

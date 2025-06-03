@@ -3,6 +3,7 @@ package ru.practicum.main.compilation.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -10,6 +11,7 @@ import lombok.ToString;
 @Data
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Compilationevents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -44,7 +44,7 @@ public class EventController {
     }
 
     @GetMapping("/admin/events")
-    public ResponseEntity<Collection<EventDto>> findEventsByAdmin(@RequestParam(name = "users") List<Long> users, @RequestParam(name = "states") List<String> states, @RequestParam(name = "categories") List<Long> categories, @PastOrPresent @RequestParam(name = "rangeStart") LocalDateTime rangeStart,  @FutureOrPresent @RequestParam(name = "rangeEnd") LocalDateTime rangeEnd, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Collection<EventDto>> findEventsByAdmin(@RequestParam(name = "users") List<Long> users, @RequestParam(name = "states") List<String> states, @RequestParam(name = "categories") List<Long> categories, @PastOrPresent @RequestParam(name = "rangeStart") LocalDateTime rangeStart, @FutureOrPresent @RequestParam(name = "rangeEnd") LocalDateTime rangeEnd, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Request to get events by Admin received.");
         //if(categories==(null)) categories = List.of(1L);
         return ResponseEntity.ok(eventService.findEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size));

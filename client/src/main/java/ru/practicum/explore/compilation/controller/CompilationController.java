@@ -28,13 +28,13 @@ public class CompilationController {
     }
 
     @GetMapping("/compilations")
-    public ResponseEntity<Object> getCompilations(@Valid @RequestParam(name = "pinned") Boolean pinned, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getCompilations(@Valid @RequestParam(required = false, name = "pinned", defaultValue = "1") Boolean pinned, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Request to get compilations received.");
         return compilationClient.getCompilations(pinned, from, size);
     }
 
     @PatchMapping("/admin/compilations/{compId}")
-    public ResponseEntity<Object> changeCompilation(@Valid @PathVariable long compId, @RequestBody CompilationDto compilationDto) {
+    public ResponseEntity<Object> changeCompilation(@Valid @PathVariable long compId, @Valid @RequestBody CompilationDto compilationDto) {
         log.info("Request to change compilation with ID {} received.", compId);
         return adminCompilationClient.changeCompilation(compId, compilationDto);
     }

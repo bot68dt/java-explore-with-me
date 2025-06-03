@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface RequestRepository extends JpaRepository<Request, Long> {
     Collection<Request> findByRequesterIdOrderByCreatedDateDesc(long userId);
 
-    Collection<Request> findByRequesterIdAndEventId(long userId, long eventId);
+    Optional<Request> findByRequesterIdAndEventId(long userId, long eventId);
 
     Optional<Collection<Request>> findByEventId(long eventId);
 }

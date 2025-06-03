@@ -63,7 +63,7 @@ public class Event {
     private LocalDateTime publishedOn;
 
     @Column(name = "state", nullable = true)
-    private String state;
+    private String state = "PENDING";
 
     @Override
     public boolean equals(Object o) {

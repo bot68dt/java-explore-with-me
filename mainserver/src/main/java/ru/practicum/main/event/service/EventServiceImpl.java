@@ -4,8 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repository.CategoryRepository;
 import ru.practicum.main.event.dto.EventDto;
@@ -54,6 +56,8 @@ public class EventServiceImpl implements EventService {
     public EventDto changeEvent(long userId, long eventId, PatchEventDto patchEventDto) {
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         if (event.isPresent()) {
+            if (event.get().getState().equals("PUBLISHED"))
+                throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
             Optional<Category> category;
             Category cat = null;
             if (patchEventDto.getCategory() != null) {
@@ -111,9 +115,9 @@ public class EventServiceImpl implements EventService {
         List<ResponseEventDto> result = new ArrayList<>();
         List<Event> listOfEvents = new ArrayList<>();
         if (onlyAvailable) {
-                listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitGreaterThanEqual(paid, rangeStart, rangeEnd, 0L, page));
+            listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitGreaterThanEqual(paid, rangeStart, rangeEnd, 0L, page));
         } else {
-                listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimit(paid, rangeStart, rangeEnd, 0L, page));
+            listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimit(paid, rangeStart, rangeEnd, 0L, page));
         }
         for (Event event : listOfEvents) {
             if (!text.equals(" ") || text.isBlank()) {
@@ -156,9 +160,13 @@ public class EventServiceImpl implements EventService {
             if (location != null) newEvent.setLocation(location);
             if (patchEventDto.getStateAction() != null) switch (patchEventDto.getStateAction()) {
                 case "REJECT_EVENT":
+                    if (event.get().getState().equals("PUBLISHED"))
+                        throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
                     newEvent.setState(CANCELED.toString().toUpperCase());
                     break;
                 case "PUBLISH_EVENT":
+                    if (event.get().getState().equals("PUBLISHED") || event.get().getState().equals("CANCELED"))
+                        throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
                     newEvent.setState("PUBLISHED");
                     newEvent.setPublishedOn(LocalDateTime.now());
                     break;

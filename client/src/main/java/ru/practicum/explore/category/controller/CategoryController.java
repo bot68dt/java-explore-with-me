@@ -22,7 +22,7 @@ public class CategoryController {
     private final AdminCategoryClient adminCategoryClient;
 
     @GetMapping("/categories/{catId}")
-    public ResponseEntity<Object>  getCategory(@Valid @PathVariable long catId) {
+    public ResponseEntity<Object> getCategory(@Valid @PathVariable long catId) {
         log.info("Request to get category with ID {} received.", catId);
         return categoryClient.getCategory(catId);
     }
@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/admin/categories/{catId}")
-    public ResponseEntity<Object> changeCategory(@Valid @PathVariable long catId, @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<Object> changeCategory(@Valid @PathVariable long catId, @Valid @RequestBody CategoryDto categoryDto) {
         log.info("Request to change category {} received.", categoryDto);
         return adminCategoryClient.changeCategory(catId, categoryDto);
     }

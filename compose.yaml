@@ -1,18 +1,18 @@
 services:
-  ewm-service:
+  client:
     build: client
     image: explore-client
     container_name: explore-client
     ports:
       - "8080:8080"
     depends_on:
-      - stats-server
-      - main-server
+      - server
+      - mainserver
     environment:
       - EXPLORE_SERVER_URL=http://server:9090
       - MAIN_SERVER_URL=http://mainserver:8085
 
-  stats-server:
+  server:
     build: server
     image: explore-server
     container_name: explore-server
@@ -25,7 +25,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=explore
       - SPRING_DATASOURCE_PASSWORD=explore
 
-  main-server:
+  mainserver:
     build: mainserver
     image: main-server
     container_name: main-server

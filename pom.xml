@@ -44,6 +44,8 @@
 								<artifactId>lombok</artifactId>
 							</exclude>
 						</excludes>
+						<mainClass>ru.practicum.explore.ExploreClient</mainClass>
+						<layout>JAR</layout>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -164,14 +166,6 @@
 							</goals>
 						</execution>
 					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<configuration>
-						<mainClass>ru.practicum.explore.ExploreClient</mainClass>
-						<layout>JAR</layout>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

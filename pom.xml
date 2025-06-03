@@ -44,6 +44,8 @@
 								<artifactId>lombok</artifactId>
 							</exclude>
 						</excludes>
+						<mainClass>ru.practicum.explore.ExploreClient</mainClass>
+						<layout>JAR</layout>
 					</configuration>
 				</plugin>
 				<plugin>

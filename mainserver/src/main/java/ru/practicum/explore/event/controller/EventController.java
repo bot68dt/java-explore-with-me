@@ -79,6 +79,7 @@ public class EventController {
         log.info("Request to create new event received: {}", newEventDto);
         EventDto event = eventService.createEvent(userId, newEventDto);
         ObjectMapper objMapper = new ObjectMapper();
+        objMapper.findAndRegisterModules();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JsonGenerator jsonGenerator = objMapper.getFactory().createGenerator(byteArrayOutputStream);
         objMapper.writeValue(jsonGenerator, event);

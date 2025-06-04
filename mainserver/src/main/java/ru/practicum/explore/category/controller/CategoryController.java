@@ -29,7 +29,7 @@ public class CategoryController {
     @GetMapping("/categories")
     public ResponseEntity<Collection<CategoryDtoWithId>> getAllCategories(@RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Request to get all categories received.");
-        return ResponseEntity.ok(categoryService.getAllCategories(from, size));
+        return ResponseEntity.ok().body(categoryService.getAllCategories(from, size));
     }
 
     @PatchMapping("/admin/categories/{catId}")

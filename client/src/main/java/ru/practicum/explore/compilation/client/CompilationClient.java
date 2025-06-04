@@ -10,7 +10,6 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explore.client.client.BaseClient;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class CompilationClient extends BaseClient {

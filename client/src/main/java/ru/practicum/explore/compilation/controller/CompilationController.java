@@ -11,8 +11,6 @@ import ru.practicum.explore.compilation.client.AdminCompilationClient;
 import ru.practicum.explore.compilation.client.CompilationClient;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping
 @RequiredArgsConstructor

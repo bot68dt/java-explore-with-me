@@ -19,7 +19,7 @@ public class StatisticsClient extends BaseClient {
     private static final String API_PREFIX = "/";
 
     @Autowired
-    public StatisticsClient(@Value("${explore-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public StatisticsClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
         super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX)).requestFactory(() -> new HttpComponentsClientHttpRequestFactory()).build());
     }
 

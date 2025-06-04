@@ -73,6 +73,6 @@ public class UserController {
         UserDto user = userService.createUser(userDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
         //log.info("New user created with ID {}", user.getId());
-        return ResponseEntity.created(location).header(null).body(user);
+        return ResponseEntity.created(location).body(user);
     }
 }

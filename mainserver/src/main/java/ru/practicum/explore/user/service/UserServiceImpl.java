@@ -3,6 +3,7 @@ package ru.practicum.explore.user.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(userId);
         Optional<Request> request1 = requestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals("PUBLISHED")) || (event.isPresent() && Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0)))
-            throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+            throw new DataIntegrityViolationException("Data integrity violation exception");
         if (event.isPresent() && event.get().getInitiator().getId() != userId && user.isPresent()) {
             Event event1;
             request.setEventId(event.get().getId());
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto createUser(UserDto userDto) {
         Optional<User> email = userRepository.findByEmail(userDto.getEmail());
-        if (email.isPresent()) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+        if (email.isPresent()) throw new DataIntegrityViolationException("Data integrity violation exception");
         User user = userRepository.save(UserMapperNew.mapToUser(userDto));
         return UserMapperNew.mapToUserDto(user);
     }
@@ -116,7 +117,7 @@ public class UserServiceImpl implements UserService {
             List<Request> requests = requestRepository.findAllById(changedStatusOfRequestsDto.getRequestIds());
             for (Request request :requests) {
                 if (Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0))
-                    throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                    throw new DataIntegrityViolationException("Data integrity violation exception");
                 if (request.getStatus().equals("PENDING")) {
                     request.setStatus("CONFIRMED");
                     Event event1 = event.get();

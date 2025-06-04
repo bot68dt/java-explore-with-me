@@ -3,6 +3,7 @@ package ru.practicum.explore.event.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class EventServiceImpl implements EventService {
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         if (event.isPresent()) {
             if (event.get().getState().equals("PUBLISHED"))
-                throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                throw new DataIntegrityViolationException("Data integrity violation exception");
             Optional<Category> category;
             Category cat = null;
             if (patchEventDto.getCategory() != null) {
@@ -165,13 +166,13 @@ public class EventServiceImpl implements EventService {
             if (patchEventDto.getStateAction() != null) {
                 switch (patchEventDto.getStateAction()) {
                     case "REJECT_EVENT": {
-                        if (state.equals("PUBLISHED")) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                        if (state.equals("PUBLISHED")) throw new DataIntegrityViolationException("Data integrity violation exception");
                         newEvent.setState(CANCELED.toString().toUpperCase());
                         return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
                     }
                     case "PUBLISH_EVENT": {
                         if (state.equals("PUBLISHED") || state.equals("CANCELED"))
-                            throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                            throw new DataIntegrityViolationException("Data integrity violation exception");
                         newEvent.setState("PUBLISHED");
                         newEvent.setPublishedOn(LocalDateTime.now());
                         return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));

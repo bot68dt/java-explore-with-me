@@ -13,11 +13,9 @@ import ru.practicum.explore.event.client.EventClient;
 import ru.practicum.explore.event.dto.EventDto;
 import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.statistics.client.StatisticsClient;
-import ru.practicum.explore.statistics.dto.StatisticsDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 
 @Controller
 @RequestMapping

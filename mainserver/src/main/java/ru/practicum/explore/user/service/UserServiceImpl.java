@@ -19,10 +19,7 @@ import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.RequestRepository;
 import ru.practicum.explore.user.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -83,11 +80,16 @@ public class UserServiceImpl implements UserService {
         if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals("PUBLISHED")) || (event.isPresent() && Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0)))
             throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
         if (event.isPresent() && event.get().getInitiator().getId() != userId && user.isPresent()) {
+            Event event1;
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
-            if (event.get().getRequestModeration())
-                request.setStatus("CONFIRMED");
-            return UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request));
+            if (!event.get().getRequestModeration()) request.setStatus("CONFIRMED");
+            if (request.getStatus().equals("CONFIRMED")) {
+                event1 = event.get();
+                event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
+                eventRepository.save(event1);
+            }
+            return UserMapperNew.mapToRequestDto(requestRepository.save(request));
         } else throw new EntityNotFoundException();
     }
 
@@ -109,25 +111,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Collection<RequestDto> changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
+        Collection<RequestDto> result = new ArrayList<>();
         if (event.isPresent()) {
-            Optional<Collection<Request>> requests = requestRepository.findByEventId(eventId);
-            if (requests.isPresent()) {
-                Collection<RequestDto> result = new ArrayList<>();
-                for (Long id : changedStatusOfRequestsDto.getRequestIds()) {
-                    for (Request request : requests.get())
-                        if (request.getId().equals(id)) {
-                            if (event.get().getParticipantLimit().equals(0))
-                                throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
-                            request.setStatus(changedStatusOfRequestsDto.getStatus().toUpperCase());
-                            Long l = event.get().getConfirmedRequests();
-                            Event event1 = event.get();
-                            event1.setConfirmedRequests(l + 1L);
-                            eventRepository.saveAndFlush(event1);
-                            result.add(UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request)));
-                        }
+            List<Request> requests = requestRepository.findAllById(changedStatusOfRequestsDto.getRequestIds());
+            for (Request request :requests) {
+                if (Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0))
+                    throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                if (request.getStatus().equals("PENDING")) {
+                    request.setStatus("CONFIRMED");
+                    Event event1 = event.get();
+                    event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
+                    eventRepository.save(event1);
                 }
-                return result;
-            } else throw new EntityNotFoundException();
+                result.add(UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request)));
+            }
+            return result;
         } else throw new EntityNotFoundException();
     }
 }

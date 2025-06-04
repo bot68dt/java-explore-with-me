@@ -3,6 +3,7 @@ package ru.practicum.explore.compilation.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +17,7 @@ import ru.practicum.explore.compilation.repository.CompilationeventsRepository;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +36,15 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Collection<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
+    public Collection<CompilationDto> getCompilations(String pinned, Integer from, Integer size) {
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-        Collection<Compilation> compilations = compilationRepository.findByPinned(pinned, page);
+        Collection<Compilation> compilations;
+        if (!pinned.isEmpty()) {
+            compilations = compilationRepository.findByPinned(Boolean.valueOf(pinned), page);
+        } else {
+            Page<Compilation> page1 = compilationRepository.findAll(page);
+            compilations = page1.hasContent() ? page1.getContent() : Collections.emptyList();
+        }
         return CompilationMapperNew.mapToCompilationDto(compilations);
     }
 

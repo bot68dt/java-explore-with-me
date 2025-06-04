@@ -10,6 +10,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explore.client.client.BaseClient;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CompilationClient extends BaseClient {
@@ -25,7 +26,7 @@ public class CompilationClient extends BaseClient {
         return get("/{compId}", null, parameters);
     }
 
-    public ResponseEntity<Object> getCompilations(Boolean pinned, Integer from, Integer size) {
+    public ResponseEntity<Object> getCompilations(String pinned, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("pinned", pinned, "from", from, "size", size);
         return get("?pinned={pinned}&from={from}&size={size}", null, parameters);
     }

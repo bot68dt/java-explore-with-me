@@ -11,6 +11,8 @@ import ru.practicum.explore.compilation.client.AdminCompilationClient;
 import ru.practicum.explore.compilation.client.CompilationClient;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class CompilationController {
     }
 
     @GetMapping("/compilations")
-    public ResponseEntity<Object> getCompilations(@Valid @RequestParam(required = false, name = "pinned", defaultValue = "1") Boolean pinned, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getCompilations(@Valid @RequestParam(required = false, name = "pinned", defaultValue = "") String pinned, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Request to get compilations received.");
         return compilationClient.getCompilations(pinned, from, size);
     }

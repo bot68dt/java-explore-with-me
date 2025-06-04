@@ -31,8 +31,8 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
     }
 
-    @ExceptionHandler(HttpClientErrorException.Conflict.class)
-    public ResponseEntity<ErrorMessage> handleConflict(final HttpClientErrorException.Conflict e) {
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ErrorMessage> handleConflict(final HttpClientErrorException e) {
         log.warn("Encountered {}: returning 409 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());
         ErrorMessage errorMessage = new ErrorMessage(List.of(e.getClass().getSimpleName(), "Data integrity violation"), e.getLocalizedMessage(), "Data integrity violation");
         return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorMessage);

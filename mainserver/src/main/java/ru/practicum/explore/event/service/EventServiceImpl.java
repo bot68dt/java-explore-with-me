@@ -67,15 +67,19 @@ public class EventServiceImpl implements EventService {
             Location location = null;
             if (patchEventDto.getLocation() != null)
                 location = locationRepository.saveAndFlush(EventMapperNew.mapToLocation(patchEventDto.getLocation()));
+            String state = event.get().getState();
             Event newEvent = EventMapperNew.changeEvent(event.get(), patchEventDto);
             if (cat != null) newEvent.setCategory(cat);
             if (location != null) newEvent.setLocation(location);
-            if (patchEventDto.getStateAction() != null) switch (patchEventDto.getStateAction()) {
-                case "SEND_TO_REVIEW":
-                    newEvent.setState(PENDING.toString().toUpperCase());
-                    break;
-                default:
+            if (patchEventDto.getStateAction() != null) {
+                switch (patchEventDto.getStateAction()) {
+                    case "SEND_TO_REVIEW":
+                        newEvent.setState(PENDING.toString().toUpperCase());
+                        break;
+                    default:
+                }
             }
+            else newEvent.setState(state);
             return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
         } else throw new EntityNotFoundException();
     }
@@ -155,23 +159,28 @@ public class EventServiceImpl implements EventService {
             Location location = null;
             if (patchEventDto.getLocation() != null)
                 location = locationRepository.saveAndFlush(EventMapperNew.mapToLocation(patchEventDto.getLocation()));
+            String state = event.get().getState();
             Event newEvent = EventMapperNew.changeEvent(event.get(), patchEventDto);
             if (cat != null) newEvent.setCategory(cat);
             if (location != null) newEvent.setLocation(location);
-            if (patchEventDto.getStateAction() != null) switch (patchEventDto.getStateAction()) {
-                case "REJECT_EVENT":
-                    if (event.get().getState().equals("PUBLISHED"))
-                        throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
-                    newEvent.setState(CANCELED.toString().toUpperCase());
-                    break;
-                case "PUBLISH_EVENT":
-                    if (event.get().getState().equals("PUBLISHED") || event.get().getState().equals("CANCELED"))
-                        throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
-                    newEvent.setState("PUBLISHED");
-                    newEvent.setPublishedOn(LocalDateTime.now());
-                    break;
-                default:
-            }
+            if (patchEventDto.getStateAction() != null) {
+                switch (patchEventDto.getStateAction()) {
+                    case "REJECT_EVENT": {
+                        if (state.equals("PUBLISHED"))
+                            throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                        newEvent.setState(CANCELED.toString().toUpperCase());
+                        return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
+                    }
+                    case "PUBLISH_EVENT": {
+                        if (state.equals("PUBLISHED") || state.equals("CANCELED"))
+                            throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                        newEvent.setState("PUBLISHED");
+                        newEvent.setPublishedOn(LocalDateTime.now());
+                        return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
+                    }
+                    default:
+                }
+            } else newEvent.setState(state);
             return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
         } else throw new EntityNotFoundException();
     }

@@ -1,13 +1,18 @@
 package ru.practicum.explore.user.controller;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.practicum.explore.user.dto.*;
 import ru.practicum.explore.user.service.UserService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -67,12 +72,18 @@ public class UserController {
     }
 
     @PostMapping("/admin/users")
-    public ResponseEntity<UserDto> createUser(@RequestParam(name = "name") String name, @RequestParam(name = "email") String email) {
+    public ResponseEntity<UserDto> createUser(@RequestParam(name = "name") String name, @RequestParam(name = "email") String email) throws IOException {
         UserDto userDto = new UserDto(null, name, email);
-        //log.info("Request to create new user received: {}", userDto);
+        log.info("Request to create new user received: {}", userDto);
         UserDto user = userService.createUser(userDto);
+        ObjectMapper objMapper = new ObjectMapper();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        JsonGenerator jsonGenerator = objMapper.getFactory().createGenerator(byteArrayOutputStream);
+        objMapper.writeValue(jsonGenerator, user);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(byteArrayOutputStream.size()));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-        //log.info("New user created with ID {}", user.getId());
-        return ResponseEntity.created(location).body(user);
+        log.info("New user created with ID {}", user.getId());
+        return ResponseEntity.created(location).headers(httpHeaders).body(user);
     }
 }

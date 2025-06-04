@@ -78,8 +78,7 @@ public class EventServiceImpl implements EventService {
                         break;
                     default:
                 }
-            }
-            else newEvent.setState(state);
+            } else newEvent.setState(state);
             return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
         } else throw new EntityNotFoundException();
     }
@@ -166,8 +165,7 @@ public class EventServiceImpl implements EventService {
             if (patchEventDto.getStateAction() != null) {
                 switch (patchEventDto.getStateAction()) {
                     case "REJECT_EVENT": {
-                        if (state.equals("PUBLISHED"))
-                            throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
+                        if (state.equals("PUBLISHED")) throw new HttpClientErrorException(HttpStatusCode.valueOf(409));
                         newEvent.setState(CANCELED.toString().toUpperCase());
                         return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
                     }

@@ -2,6 +2,7 @@ package ru.practicum.explore.global.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +24,17 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorMessage> handleBadRequest(final BadRequestException e) {
+        log.warn("Encountered {}: returning 400 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage(List.of(e.getClass().getSimpleName(), "Error in request"), e.getLocalizedMessage(), "Error in request");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleBadEntity(final DataIntegrityViolationException e) {
-        log.warn("Encountered {}: returning 400 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());
-        ErrorMessage errorMessage = new ErrorMessage(List.of(e.getClass().getSimpleName(), e.getCause().getMessage()), e.getLocalizedMessage(), e.getCause().getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
+        log.warn("Encountered {}: returning 409 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage(List.of(e.getClass().getSimpleName(), "Conflict: Data integrity violation exception"), e.getLocalizedMessage(), "Conflict: Data integrity violation exception");
+        return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
     }
 }

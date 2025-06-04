@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.user.client.AdminUserClient;
@@ -12,7 +11,7 @@ import ru.practicum.explore.user.client.UserClient;
 import ru.practicum.explore.user.dto.RequestsDto;
 import ru.practicum.explore.user.dto.UserDto;
 
-@Controller
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j

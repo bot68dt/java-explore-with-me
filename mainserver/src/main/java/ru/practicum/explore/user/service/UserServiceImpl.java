@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         if (event.isPresent() && event.get().getInitiator().getId() != userId && user.isPresent()) {
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
-            if (!event.get().getRequestModeration())
+            if (event.get().getRequestModeration())
                 request.setStatus("CONFIRMED");
             return UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request));
         } else throw new EntityNotFoundException();

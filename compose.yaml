@@ -25,6 +25,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=explore
       - SPRING_DATASOURCE_PASSWORD=explore
 
+
   mainserver:
     build: mainserver
     image: main-server

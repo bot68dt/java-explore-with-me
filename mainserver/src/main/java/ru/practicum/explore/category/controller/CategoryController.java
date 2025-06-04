@@ -1,14 +1,20 @@
 package ru.practicum.explore.category.controller;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.CategoryDtoWithId;
 import ru.practicum.explore.category.service.CategoryService;
+import ru.practicum.explore.user.dto.UserDto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
@@ -46,11 +52,17 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/categories")
-    public ResponseEntity<CategoryDtoWithId> createCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDtoWithId> createCategory(@RequestBody CategoryDto categoryDto) throws IOException {
         log.info("Request to create new category received: {}", categoryDto);
         CategoryDtoWithId categoryDtoWithId = categoryService.createCategory(categoryDto);
+        ObjectMapper objMapper = new ObjectMapper();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        JsonGenerator jsonGenerator = objMapper.getFactory().createGenerator(byteArrayOutputStream);
+        objMapper.writeValue(jsonGenerator, categoryDtoWithId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(byteArrayOutputStream.size()));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryDtoWithId.getId()).toUri();
         log.info("New category created with ID {}", categoryDtoWithId.getId());
-        return ResponseEntity.created(location).body(categoryDtoWithId);
+        return ResponseEntity.created(location).headers(httpHeaders).body(categoryDtoWithId);
     }
 }

@@ -1,9 +1,12 @@
 package ru.practicum.explore.event.controller;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -12,6 +15,8 @@ import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.event.dto.ResponseEventDto;
 import ru.practicum.explore.event.service.EventService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -70,11 +75,17 @@ public class EventController {
     }
 
     @PostMapping("/users/{userId}/events")
-    public ResponseEntity<EventDto> createEvent(@PathVariable long userId, @RequestBody PatchEventDto newEventDto) {
+    public ResponseEntity<EventDto> createEvent(@PathVariable long userId, @RequestBody PatchEventDto newEventDto) throws IOException {
         log.info("Request to create new event received: {}", newEventDto);
         EventDto event = eventService.createEvent(userId, newEventDto);
+        ObjectMapper objMapper = new ObjectMapper();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        JsonGenerator jsonGenerator = objMapper.getFactory().createGenerator(byteArrayOutputStream);
+        objMapper.writeValue(jsonGenerator, event);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(byteArrayOutputStream.size()));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(event.getId()).toUri();
         log.info("New user created with ID {}", event.getId());
-        return ResponseEntity.created(location).body(event);
+        return ResponseEntity.created(location).headers(httpHeaders).body(event);
     }
 }

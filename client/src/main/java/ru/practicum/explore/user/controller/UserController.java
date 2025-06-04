@@ -3,6 +3,9 @@ package ru.practicum.explore.user.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,9 +66,11 @@ public class UserController {
         return userClient.createRequest(userId, eventId);
     }
 
-    @PostMapping("/admin/users")
+    @PostMapping(value = "/admin/users", produces = "application/json")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserDto userDto) {
+        final HttpHeaders httpHeaders= new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         log.info("Request to create new user received: {}", userDto);
-        return adminUserClient.createUser(userDto);
+        return new ResponseEntity<Object>(adminUserClient.createUser(userDto), httpHeaders, HttpStatus.OK);
     }
 }

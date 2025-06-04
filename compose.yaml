@@ -30,7 +30,7 @@ services:
     image: main-server
     container_name: main-server
     ports:
-      - "127.0.0.3:8085:8085"
+      - "8085:8085"
     depends_on:
       - maindb
     environment:

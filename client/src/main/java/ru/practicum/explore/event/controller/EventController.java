@@ -43,7 +43,8 @@ public class EventController {
         log.info("Request to get published event with ID {} received.", id);
         StatisticsDto statisticsDto = new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         LinkedHashMap<String, Object> statisticsDtoWithHits = LinkedHashMap.class.cast(statisticsClient.addUri(statisticsDto).getBody());
-        return eventClient.getPublishedEventById(id, (Integer) statisticsDtoWithHits.get("unique"));
+        Integer hits = (Integer) statisticsDtoWithHits.get("unique");
+        return eventClient.getPublishedEventById(id, hits);
     }
 
     @GetMapping("/users/{userId}/events")

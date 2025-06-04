@@ -68,7 +68,7 @@ public class UserController {
 
     @PostMapping(value = "/admin/users", produces = "application/json")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserDto userDto) {
-        final HttpHeaders httpHeaders= new HttpHeaders();
+        final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         log.info("Request to create new user received: {}", userDto);
         return new ResponseEntity<Object>(adminUserClient.createUser(userDto), httpHeaders, HttpStatus.OK);

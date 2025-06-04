@@ -17,7 +17,7 @@ services:
     image: explore-server
     container_name: explore-server
     ports:
-      - "9090:9090"
+      - "127.0.0.3:9090:9090"
     depends_on:
       - db
     environment:

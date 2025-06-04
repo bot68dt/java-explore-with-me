@@ -32,6 +32,9 @@ public class AdminUserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createUser(UserDto userDto) {
-        return post("", userDto);
+        String name = userDto.getName();
+        String email = userDto.getEmail();
+        Map<String, Object> parameters = Map.of("name", name, "email", email);
+        return post("?name={name}&email={email}", null, parameters, null);
     }
 }

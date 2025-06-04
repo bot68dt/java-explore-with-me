@@ -67,7 +67,8 @@ public class UserController {
     }
 
     @PostMapping("/admin/users")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestParam(name = "name") String name, @RequestParam(name = "email") String email) {
+        UserDto userDto = new UserDto(null, name, email);
         log.info("Request to create new user received: {}", userDto);
         UserDto user = userService.createUser(userDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();

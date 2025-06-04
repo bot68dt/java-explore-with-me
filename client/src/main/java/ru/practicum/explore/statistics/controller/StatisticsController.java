@@ -4,13 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.statistics.client.StatisticsClient;
 import ru.practicum.explore.statistics.dto.StatisticsDto;
 
-@Controller
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j

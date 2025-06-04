@@ -11,7 +11,6 @@ import ru.practicum.explore.compilation.service.CompilationService;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping

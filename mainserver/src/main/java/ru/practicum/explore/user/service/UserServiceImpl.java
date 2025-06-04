@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
             Event event1;
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
-            if (!event.get().getRequestModeration()) request.setStatus("CONFIRMED");
+            if (event.get().getRequestModeration()) request.setStatus("CONFIRMED");
             if (request.getStatus().equals("CONFIRMED")) {
                 event1 = event.get();
                 event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);

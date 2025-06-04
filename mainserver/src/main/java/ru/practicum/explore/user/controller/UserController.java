@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping("/admin/users")
     public ResponseEntity<Collection<UserDto>> getUsers(@RequestParam(required = false, name = "ids") List<Long> ids, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Request to get users received.");
-        return ResponseEntity.ok(userService.getAllUsers(ids, from, size));
+        return ResponseEntity.ok().body(userService.getAllUsers(ids, from, size));
     }
 
     @PatchMapping("/users/{userId}/requests/{requestId}/cancel")

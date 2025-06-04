@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.CategoryDtoWithId;
 import ru.practicum.explore.category.service.CategoryService;
-import ru.practicum.explore.user.dto.UserDto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

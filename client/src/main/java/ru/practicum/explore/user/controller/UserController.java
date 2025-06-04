@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -71,6 +70,6 @@ public class UserController {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         log.info("Request to create new user received: {}", userDto);
-        return new ResponseEntity<Object>(adminUserClient.createUser(userDto), httpHeaders, HttpStatus.OK);
+        return adminUserClient.createUser(userDto);
     }
 }

@@ -17,7 +17,7 @@ services:
     image: explore-server
     container_name: explore-server
     ports:
-      - "127.0.0.3:9090:9090"
+      - "9090:9090"
     depends_on:
       - db
     environment:
@@ -30,7 +30,7 @@ services:
     image: main-server
     container_name: main-server
     ports:
-      - "8085:8085"
+      - "127.0.0.3:8085:8085"
     depends_on:
       - maindb
     environment:

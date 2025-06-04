@@ -32,6 +32,6 @@ public class AdminUserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createUser(UserDto userDto) {
-        return post("", null, null, userDto);
+        return post("", userDto);
     }
 }

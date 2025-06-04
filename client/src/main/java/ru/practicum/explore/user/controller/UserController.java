@@ -65,7 +65,7 @@ public class UserController {
 
     @PostMapping(value = "/admin/users", produces = "application/json")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserDto userDto) {
-        log.info("Request to create new user received: {}", userDto);
+        //log.info("Request to create new user received: {}", userDto);
         return adminUserClient.createUser(userDto);
     }
 }

@@ -111,7 +111,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseInformationAboutRequests changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        Collection<RequestDto> result = new ArrayList<>();
         if (event.isPresent()) {
             Event event1 = event.get();
             Long limit = Long.valueOf(event.get().getParticipantLimit());

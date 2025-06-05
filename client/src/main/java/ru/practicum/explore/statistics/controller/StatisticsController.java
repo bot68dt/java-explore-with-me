@@ -1,6 +1,8 @@
 package ru.practicum.explore.statistics.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -9,19 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.statistics.client.StatisticsClient;
 import ru.practicum.explore.statistics.dto.StatisticsDto;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j
 @Validated
 public class StatisticsController {
-
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final StatisticsClient statisticsClient;
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getUriStatisitcs(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end, @RequestParam(required = false, name = "uris", defaultValue = "") String uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Object> getUriStatisitcs(@PastOrPresent @RequestParam(name = "start") LocalDateTime start, @Future @RequestParam(name = "end") LocalDateTime end, @RequestParam(required = false, name = "uris", defaultValue = "") String uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
         log.info("Request to get uri {} received.", uris);
-        return statisticsClient.getUris(start, end, uris, unique);
+        return statisticsClient.getUris(start.format(formatter), end.format(formatter), uris, unique);
     }
 
     @PostMapping("/hit")

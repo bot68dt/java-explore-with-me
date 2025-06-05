@@ -1,7 +1,7 @@
 package ru.practicum.explore.statistics.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class StatisticsController {
     private final StatisticsClient statisticsClient;
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getUriStatisitcs(@PastOrPresent @RequestParam(name = "start") LocalDateTime start, @Future @RequestParam(name = "end") LocalDateTime end, @RequestParam(required = false, name = "uris", defaultValue = "") String uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Object> getUriStatisitcs(@Valid @PastOrPresent @RequestParam(name = "start") LocalDateTime start, @Valid @FutureOrPresent @RequestParam(name = "end") LocalDateTime end, @RequestParam(required = false, name = "uris", defaultValue = "") String uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
         log.info("Request to get uri {} received.", uris);
         return statisticsClient.getUris(start.format(formatter), end.format(formatter), uris, unique);
     }

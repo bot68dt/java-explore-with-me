@@ -2,6 +2,7 @@ package ru.practicum.explore.user.service;
 
 import ru.practicum.explore.user.dto.ChangedStatusOfRequestsDto;
 import ru.practicum.explore.user.dto.RequestDto;
+import ru.practicum.explore.user.dto.ResponseInformationAboutRequests;
 import ru.practicum.explore.user.dto.UserDto;
 
 import java.util.Collection;
@@ -22,5 +23,5 @@ public interface UserService {
 
     Collection<RequestDto> getEventRequests(long userId, long eventId);
 
-    Collection<RequestDto> changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto);
+    ResponseInformationAboutRequests changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto);
 }

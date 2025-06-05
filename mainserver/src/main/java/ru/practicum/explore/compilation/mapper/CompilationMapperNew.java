@@ -32,7 +32,7 @@ public class CompilationMapperNew {
     }
 
     public static Compilation changeCompilation(Compilation compilation, RequestCompilationDto requestCompilationDto) {
-        compilation.setTitle(requestCompilationDto.getTitle());
+        if (!requestCompilationDto.getTitle().equals("null")) compilation.setTitle(requestCompilationDto.getTitle());
         compilation.setPinned(requestCompilationDto.getPinned());
         return compilation;
     }

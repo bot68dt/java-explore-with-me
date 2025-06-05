@@ -25,7 +25,7 @@ public class Request {
     private Long requesterId;
 
     @Column(name = "status", nullable = false)
-    private String status = "PENDING";
+    private String status;
 
     @Override
     public boolean equals(Object o) {

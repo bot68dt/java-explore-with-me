@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
-    public ResponseEntity<Collection<RequestDto>> changeRequestsStatuses(@PathVariable long userId, @PathVariable long eventId, @RequestBody ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
+    public ResponseEntity<ResponseInformationAboutRequests> changeRequestsStatuses(@PathVariable long userId, @PathVariable long eventId, @RequestBody ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
         log.info("Request to change requests of user with ID {} received.", userId);
         return ResponseEntity.ok().body(userService.changeRequestsStatuses(userId, eventId, changedStatusOfRequestsDto));
     }

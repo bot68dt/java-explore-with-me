@@ -21,11 +21,51 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdAndState(long eventId, String state);
 
-    Optional<Event> findByIdAndPublishedOnLessThanEqual(long eventId, LocalDateTime time);
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(boolean paid, LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, List<Long> catId, Pageable pageable);
 
-    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitGreaterThanEqual(boolean paid, LocalDateTime start, LocalDateTime end, Long limit, Pageable pageable);
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(boolean paid, LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, List<Long> catId, Pageable pageable);
 
-    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimit(boolean paid, LocalDateTime start, LocalDateTime end, Long limit, Pageable pageable);
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(boolean paid, LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, Pageable pageable);
+
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(boolean paid, LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, Pageable pageable);
+
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndCategoryIdIn(boolean paid, LocalDateTime start, LocalDateTime end, String state1, List<Long> catId, Pageable pageable);
+
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndCategoryIdIn(boolean paid, LocalDateTime start, LocalDateTime end, String state1, List<Long> catId, Pageable pageable);
+
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndState(boolean paid, LocalDateTime start, LocalDateTime end, String state1, Pageable pageable);
+
+    List<Event> findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndState(boolean paid, LocalDateTime start, LocalDateTime end, String state1, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, List<Long> catId, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, List<Long> catId, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(LocalDateTime start, LocalDateTime end, String state1, String text1, String text2, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndCategoryIdIn(LocalDateTime start, LocalDateTime end, String state1, List<Long> catId, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndCategoryIdIn(LocalDateTime start, LocalDateTime end, String state1, List<Long> catId, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndState(LocalDateTime start, LocalDateTime end, String state1, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndState(LocalDateTime start, LocalDateTime end, String state1, Pageable pageable);
+
+    List<Event> findByInitiatorIdInAndStateInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<Long> users, List<String> states, List<Long> categories, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByInitiatorIdInAndStateInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<Long> users, List<String> states, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByInitiatorIdInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<Long> users, List<Long> categories, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByInitiatorIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<Long> users, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByStateInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<String> states, List<Long> categories, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByStateInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<String> states, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Event> findByCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(List<Long> categories, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
     List<Event> findByEventDateGreaterThanEqualAndEventDateLessThanEqual(LocalDateTime start, LocalDateTime end, Pageable pageable);
 }

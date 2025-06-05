@@ -75,6 +75,9 @@ public class EventServiceImpl implements EventService {
                     case "SEND_TO_REVIEW":
                         newEvent.setState(PENDING.toString().toUpperCase());
                         break;
+                    case "CANCEL_REVIEW":
+                        newEvent.setState("CANCELED");
+                        break;
                     default:
                 }
             } else newEvent.setState(state);
@@ -115,26 +118,57 @@ public class EventServiceImpl implements EventService {
     public Collection<ResponseEventDto> findEventsByUser(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size) {
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
         List<ResponseEventDto> result = new ArrayList<>();
-        List<Event> listOfEvents = new ArrayList<>();
-        if (onlyAvailable) {
-            listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitGreaterThanEqual(paid, rangeStart, rangeEnd, 0L, page));
-        } else {
-            listOfEvents.addAll(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimit(paid, rangeStart, rangeEnd, 0L, page));
-        }
-        for (Event event : listOfEvents) {
-            if (!text.equals(" ") || !text.isBlank()) {
-                if (!categories.equals(List.of(0L)))
-                    if ((event.getAnnotation().contains(text) || event.getDescription().contains(text)) && categories.contains(event.getCategory().getId()))
-                        result.add(EventMapperNew.mapToResponseEventDto(event));
-                    else {
-                        if (event.getAnnotation().contains(text) || event.getDescription().contains(text))
-                            result.add(EventMapperNew.mapToResponseEventDto(event));
-                    }
+        if (!text.equals(" ") || !text.isBlank()) {
+            if (!categories.equals(List.of(0L))) {
+                if (onlyAvailable) {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(paid, rangeStart, rangeEnd, "PUBLISHED", text, text, categories, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(rangeStart, rangeEnd, "PUBLISHED", text, text, categories, page)));
+                } else {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(paid, rangeStart, rangeEnd, "PUBLISHED", text, text, categories, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCaseAndCategoryIdIn(rangeStart, rangeEnd, "PUBLISHED", text, text, categories, page)));
+                }
             } else {
-                if (!categories.equals(List.of(0L))) if (categories.contains(event.getCategory().getId()))
-                    result.add(EventMapperNew.mapToResponseEventDto(event));
-                else {
-                    result.add(EventMapperNew.mapToResponseEventDto(event));
+                if (onlyAvailable) {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(paid, rangeStart, rangeEnd, "PUBLISHED", text, text, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(rangeStart, rangeEnd, "PUBLISHED", text, text, page)));
+
+                } else {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(paid, rangeStart, rangeEnd, "PUBLISHED", text, text, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndAnnotationIgnoreCaseOrDescriptionIgnoreCase(rangeStart, rangeEnd, "PUBLISHED", text, text, page)));
+                }
+            }
+        } else {
+            if (!categories.equals(List.of(0L))) {
+                if (onlyAvailable) {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndCategoryIdIn(paid, rangeStart, rangeEnd, "PUBLISHED", categories, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndStateAndCategoryIdIn(rangeStart, rangeEnd, "PUBLISHED", categories, page)));
+                } else {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndCategoryIdIn(paid, rangeStart, rangeEnd, "PUBLISHED", categories, page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndStateAndCategoryIdIn(rangeStart, rangeEnd, "PUBLISHED", categories, page)));
+                }
+            } else {
+                if (onlyAvailable) {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndState(paid, rangeStart, rangeEnd, "PUBLISHED", page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndParticipantLimitNotNullAndState(rangeStart, rangeEnd, "PUBLISHED", page)));
+                } else {
+                    if (paid)
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByPaidAndEventDateGreaterThanEqualAndEventDateLessThanEqualAndState(paid, rangeStart, rangeEnd, "PUBLISHED", page)));
+                    else
+                        result.addAll(EventMapperNew.mapToResponseEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqualAndState(rangeStart, rangeEnd, "PUBLISHED", page)));
                 }
             }
         }
@@ -164,7 +198,8 @@ public class EventServiceImpl implements EventService {
             if (patchEventDto.getStateAction() != null) {
                 switch (patchEventDto.getStateAction()) {
                     case "REJECT_EVENT": {
-                        if (state.equals("PUBLISHED")) throw new DataIntegrityViolationException("Data integrity violation exception");
+                        if (state.equals("PUBLISHED"))
+                            throw new DataIntegrityViolationException("Data integrity violation exception");
                         newEvent.setState(CANCELED.toString().toUpperCase());
                         return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(newEvent));
                     }
@@ -186,28 +221,34 @@ public class EventServiceImpl implements EventService {
     public Collection<EventDto> findEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
         List<EventDto> result = new ArrayList<>();
-        List<Event> listOfEvents = new ArrayList<>(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqual(rangeStart, rangeEnd, page));
-        for (Event event : listOfEvents) {
-            if (!users.equals(List.of(0L))) {
-                if (!states.equals(List.of("0"))) {
-                    if (!categories.equals(List.of(0L)))
-                        if (users.contains(event.getInitiator().getId()) && states.contains(event.getState()) && categories.contains(event.getCategory().getId()))
-                            result.add(EventMapperNew.mapToEventDto(event));
-                        else if (users.contains(event.getInitiator().getId()) && states.contains(event.getState()))
-                            result.add(EventMapperNew.mapToEventDto(event));
-                } else if (!categories.equals(List.of(0L)))
-                    if (users.contains(event.getInitiator().getId()) && categories.contains(event.getCategory().getId()))
-                        result.add(EventMapperNew.mapToEventDto(event));
-                    else if (users.contains(event.getInitiator().getId()))
-                        result.add(EventMapperNew.mapToEventDto(event));
-            } else if (!states.equals(List.of("0"))) {
-                if (!categories.equals(List.of(0L)))
-                    if (states.contains(event.getState()) && categories.contains(event.getCategory().getId()))
-                        result.add(EventMapperNew.mapToEventDto(event));
-                    else if (states.contains(event.getState())) result.add(EventMapperNew.mapToEventDto(event));
-            } else if (!categories.equals(List.of(0L))) {
-                if (categories.contains(event.getCategory().getId())) result.add(EventMapperNew.mapToEventDto(event));
-            } else result.add(EventMapperNew.mapToEventDto(event));
+        if (!users.equals(List.of(0L))) {
+            if (!states.equals(List.of("0"))) {
+                if (!categories.equals(List.of(0L))) {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByInitiatorIdInAndStateInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(users, states, categories, rangeStart, rangeEnd, page)));
+                } else {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByInitiatorIdInAndStateInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(users, states, rangeStart, rangeEnd, page)));
+                }
+            } else {
+                if (!categories.equals(List.of(0L))) {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByInitiatorIdInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(users, categories, rangeStart, rangeEnd, page)));
+                } else {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByInitiatorIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(users, rangeStart, rangeEnd, page)));
+                }
+            }
+        } else {
+            if (!states.equals(List.of("0"))) {
+                if (!categories.equals(List.of(0L))) {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByStateInAndCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(states, categories, rangeStart, rangeEnd, page)));
+                } else {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByStateInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(states, rangeStart, rangeEnd, page)));
+                }
+            } else {
+                if (!categories.equals(List.of(0L))) {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByCategoryIdInAndEventDateGreaterThanEqualAndEventDateLessThanEqual(categories, rangeStart, rangeEnd, page)));
+                } else {
+                    result.addAll(EventMapperNew.mapToEventDto(eventRepository.findByEventDateGreaterThanEqualAndEventDateLessThanEqual(rangeStart, rangeEnd, page)));
+                }
+            }
         }
         return result;
     }

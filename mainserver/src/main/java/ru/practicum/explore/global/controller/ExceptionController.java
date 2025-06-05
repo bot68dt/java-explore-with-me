@@ -31,6 +31,13 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorMessage> handleBadRequest(final RuntimeException e) {
+        log.warn("Encountered {}: returning 400 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage(List.of(e.getClass().getSimpleName(), "Error in request"), e.getLocalizedMessage(), "Error in request");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleBadEntity(final DataIntegrityViolationException e) {
         log.warn("Encountered {}: returning 409 Error. Message: {}", e.getClass().getSimpleName(), e.getMessage());

@@ -14,7 +14,7 @@ import java.util.List;
 public class CompilationDto {
     @NotBlank
     @Length(min = 1, max = 50)
-    private String title;
+    private String title = "null";
     private Boolean pinned = false;
     private List<Long> events = List.of();
 }

@@ -11,6 +11,7 @@ import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.user.dto.ChangedStatusOfRequestsDto;
 import ru.practicum.explore.user.dto.RequestDto;
+import ru.practicum.explore.user.dto.ResponseInformationAboutRequests;
 import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.mapper.UserMapperNew;
 import ru.practicum.explore.user.model.Request;
@@ -82,12 +83,12 @@ public class UserServiceImpl implements UserService {
             Event event1;
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
-            if (event.get().getRequestModeration()) request.setStatus("CONFIRMED");
-            if (request.getStatus().equals("CONFIRMED")) {
+            if (!event.get().getRequestModeration() || event.get().getParticipantLimit().equals(0)) {
+                request.setStatus("CONFIRMED");
                 event1 = event.get();
                 event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
                 eventRepository.save(event1);
-            }
+            } else request.setStatus("PENDING");
             return UserMapperNew.mapToRequestDto(requestRepository.save(request));
         } else throw new EntityNotFoundException();
     }
@@ -108,23 +109,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Collection<RequestDto> changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
+    public ResponseInformationAboutRequests changeRequestsStatuses(long userId, long eventId, ChangedStatusOfRequestsDto changedStatusOfRequestsDto) {
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         Collection<RequestDto> result = new ArrayList<>();
         if (event.isPresent()) {
-            List<Request> requests = requestRepository.findAllById(changedStatusOfRequestsDto.getRequestIds());
-            for (Request request :requests) {
-                if (Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0))
-                    throw new DataIntegrityViolationException("Data integrity violation exception");
-                if (request.getStatus().equals("PENDING")) {
-                    request.setStatus("CONFIRMED");
-                    Event event1 = event.get();
-                    event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
-                    eventRepository.save(event1);
+            Event event1 = event.get();
+            Long limit = Long.valueOf(event.get().getParticipantLimit());
+            Long iterable = event.get().getConfirmedRequests();
+            Collection<Request> requests = requestRepository.findByIdInAndEventId(changedStatusOfRequestsDto.getRequestIds(), eventId);
+            if (!requests.isEmpty()) {
+                for (Request request : requests) {
+                    if (limit - iterable == 0L)
+                        throw new DataIntegrityViolationException("Data integrity violation exception");
+                    if (request.getStatus().equals("PENDING")) {
+                        if (changedStatusOfRequestsDto.getStatus().equals("REJECTED"))
+                            request.setStatus(changedStatusOfRequestsDto.getStatus());
+                        if (changedStatusOfRequestsDto.getStatus().equals("CONFIRMED")) {
+                            request.setStatus(changedStatusOfRequestsDto.getStatus());
+                            event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
+                            event1 = eventRepository.saveAndFlush(event1);
+                            iterable = event1.getConfirmedRequests();
+                        }
+                        requestRepository.saveAndFlush(request);
+                    }
                 }
-                result.add(UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(request)));
-            }
-            return result;
+            } else throw new DataIntegrityViolationException("Data integrity violation exception");
         } else throw new EntityNotFoundException();
+        ResponseInformationAboutRequests response = new ResponseInformationAboutRequests();
+        response.setConfirmedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "CONFIRMED")));
+        response.setRejectedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "REJECTED")));
+        response.setPendingRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "PENDING")));
+        return response;
     }
 }

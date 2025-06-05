@@ -61,12 +61,16 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(required = false, name = "text", defaultValue = " ") String text, @Valid @RequestParam(required = false, name = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(required = false, name = "paid", defaultValue = "0") Boolean paid, @Valid @RequestParam(required = false, name = "rangeStart", defaultValue = " ") String rangeStart, @Valid @RequestParam(required = false, name = "rangeEnd", defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(required = false, name = "onlyAvailable", defaultValue = "1") Boolean onlyAvailable, @Valid @RequestParam(required = false, name = "sort", defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @Valid @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(required = false, name = "text", defaultValue = " ") String text, @Valid @RequestParam(required = false, name = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(required = false, name = "paid", defaultValue = "0") Boolean paid, @Valid @RequestParam(required = false, name = "rangeStart", defaultValue = " ") String rangeStart, @Valid @RequestParam(required = false, name = "rangeEnd", defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(required = false, name = "onlyAvailable", defaultValue = "1") Boolean onlyAvailable, @Valid @RequestParam(required = false, name = "sort", defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @Valid @RequestParam(required = false, name = "size", defaultValue = "10") Integer size, HttpServletRequest request) {
         log.info("Request to get events by User received {}.", text);
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
         LocalDateTime startDecoded;
         if (rangeStart.equals(" ")) startDecoded = LocalDateTime.now();
         else startDecoded = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime endDecoded = LocalDateTime.parse(rangeEnd, formatter);
+        StatisticsDto statisticsDto = new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        statisticsClient.addUri(statisticsDto).getBody();
         return eventClient.findEventsByUser(text, categories, paid, startDecoded, endDecoded, onlyAvailable, sort, from, size);
     }
 

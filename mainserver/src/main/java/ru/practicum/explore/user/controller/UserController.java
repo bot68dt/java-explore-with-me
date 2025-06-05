@@ -72,8 +72,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/users")
-    public ResponseEntity<UserDto> createUser(@RequestParam(name = "name") String name, @RequestParam(name = "email") String email) throws IOException {
-        UserDto userDto = new UserDto(null, name, email);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) throws IOException {
         log.info("Request to create new user received: {}", userDto);
         UserDto user = userService.createUser(userDto);
         ObjectMapper objMapper = new ObjectMapper();

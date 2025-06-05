@@ -1,9 +1,12 @@
 package ru.practicum.explore.statistics.service;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.explore.statistics.dto.*;
 import ru.practicum.explore.statistics.mapper.UriStatisticsMapperNew;
 import ru.practicum.explore.statistics.model.Statistics;
@@ -19,12 +22,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
+@Validated
 public class UriStatisticsServiceImpl implements UriStatisticsService {
 
     private final UriStatisticsRepository uriStatisticsRepository;
 
     @Override
-    public List<HitStatisticsDto> getUriStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+    @Validated
+    public List<HitStatisticsDto> getDecodedUriStatistics(@PastOrPresent LocalDateTime start, @FutureOrPresent LocalDateTime end, List<String> uris, boolean unique) {
         List<HitStatisticsDto> collection = new ArrayList<>();
         if (uris.isEmpty()) {
             if (unique)

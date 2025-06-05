@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class StatisticsController {
 
     private final UriStatisticsService uriStatisticsService;
@@ -36,7 +38,7 @@ public class StatisticsController {
         log.info("Request to get statistics of uris {} received.", uris);
         LocalDateTime startDecoded = LocalDateTime.parse(StringUtils.newStringUtf8(start), formatter);
         LocalDateTime endDecoded = LocalDateTime.parse(StringUtils.newStringUtf8(end), formatter);
-        return ResponseEntity.ok().body(uriStatisticsService.getUriStatistics(startDecoded, endDecoded, urisDecoded, unique));
+        return ResponseEntity.ok().body(uriStatisticsService.getDecodedUriStatistics(startDecoded, endDecoded, urisDecoded, unique));
     }
 
     @PostMapping("/hit")

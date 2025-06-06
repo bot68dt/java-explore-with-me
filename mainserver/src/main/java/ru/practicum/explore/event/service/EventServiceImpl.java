@@ -25,9 +25,6 @@ import ru.practicum.explore.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static javax.print.attribute.standard.JobState.CANCELED;
-import static javax.print.attribute.standard.JobState.PENDING;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j

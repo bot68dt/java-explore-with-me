@@ -27,7 +27,7 @@ public class CompilationController {
     }
 
     @GetMapping("/compilations")
-    public ResponseEntity<Collection<CompilationDto>> getCompilations(@RequestParam(name = "pinned") String pinned, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Collection<CompilationDto>> getCompilations(@RequestParam String pinned, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get compilations received.");
         return ResponseEntity.ok().body(compilationService.getCompilations(pinned, from, size));
     }

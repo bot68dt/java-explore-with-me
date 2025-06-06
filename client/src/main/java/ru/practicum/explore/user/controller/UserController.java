@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/users")
-    public ResponseEntity<Object> getUsers(@Valid @RequestParam(required = false, name = "ids", defaultValue = "0") Long ids, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getUsers(@Valid @RequestParam(defaultValue = "0") Long ids, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get users received.");
         return adminUserClient.getAllUsers(ids, from, size);
     }

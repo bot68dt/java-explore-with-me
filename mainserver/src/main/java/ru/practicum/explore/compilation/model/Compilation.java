@@ -1,7 +1,8 @@
 package ru.practicum.explore.compilation.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.explore.event.model.Event;
 
@@ -9,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "compilations")
-@Data
+@Getter
+@Setter
 @ToString
 public class Compilation {
     @Id

@@ -1,16 +1,19 @@
 package ru.practicum.explore.event.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.global.dto.Statuses;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
-@Data
+@Getter
+@Setter
 @ToString
 public class Event {
     @Id
@@ -63,7 +66,7 @@ public class Event {
     private LocalDateTime publishedOn;
 
     @Column(name = "state", nullable = true)
-    private String state = "PENDING";
+    private String state = Statuses.PENDING.name();
 
     @Override
     public boolean equals(Object o) {

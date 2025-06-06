@@ -24,7 +24,7 @@ public class StatisticsController {
     private final StatisticsClient statisticsClient;
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getUriStatisitcs(@Valid @PastOrPresent @RequestParam(name = "start") LocalDateTime start, @Valid @FutureOrPresent @RequestParam(name = "end") LocalDateTime end, @RequestParam(required = false, name = "uris", defaultValue = "") String uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Object> getUriStatisitcs(@Valid @PastOrPresent @RequestParam LocalDateTime start, @Valid @FutureOrPresent @RequestParam LocalDateTime end, @RequestParam(defaultValue = "") String uris, @RequestParam(defaultValue = "false") boolean unique) {
         log.info("Request to get uri {} received.", uris);
         return statisticsClient.getUris(start.format(formatter), end.format(formatter), uris, unique);
     }

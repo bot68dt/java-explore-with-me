@@ -3,10 +3,13 @@ package ru.practicum.explore.compilation.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.method.MethodValidationException;
+import org.springframework.validation.method.MethodValidationResult;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.RequestCompilationDto;
 import ru.practicum.explore.compilation.mapper.CompilationMapperNew;
@@ -80,7 +83,7 @@ public class CompilationServiceImpl implements CompilationService {
         List<Event> events = eventRepository.findAllById(requestCompilationDto.getEvents());
         if (requestCompilationDto.getEvents().size() != events.size() && !requestCompilationDto.getEvents().equals(List.of(0L)))
             throw new EntityNotFoundException();
-        if (requestCompilationDto.getTitle().equals("null")) throw new RuntimeException();
+        if (requestCompilationDto.getTitle().equals("null")) throw new MethodValidationException(MethodValidationResult.emptyResult());
         Compilation compilation = new Compilation();
         compilation = CompilationMapperNew.changeCompilation(compilation, requestCompilationDto);
         compilation.setEvents(events);

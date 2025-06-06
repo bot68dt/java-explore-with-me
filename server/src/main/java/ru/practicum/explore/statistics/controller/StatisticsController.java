@@ -31,7 +31,7 @@ public class StatisticsController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/stats")
-    public ResponseEntity<Collection<HitStatisticsDto>> getUriStatistics(@RequestParam(name = "start") byte[] start, @RequestParam(name = "end") byte[] end, @RequestParam(required = false, name = "uris", defaultValue = "") List<String> uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Collection<HitStatisticsDto>> getUriStatistics(@RequestParam(name = "start") byte[] start, @RequestParam(name = "end") byte[] end, @RequestParam(name = "uris", defaultValue = "") List<String> uris, @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         List<String> urisDecoded = new ArrayList<>();
         for (String uri : uris)
             urisDecoded.add(UriUtils.decode(uri, "UTF-8"));

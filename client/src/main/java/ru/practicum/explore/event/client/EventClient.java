@@ -12,11 +12,13 @@ import ru.practicum.explore.event.dto.EventDto;
 import ru.practicum.explore.event.dto.PatchEventDto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Service
 public class EventClient extends BaseClient {
     private static final String API_PREFIX = "/";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public EventClient(@Value("${main-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -38,7 +40,11 @@ public class EventClient extends BaseClient {
         return get("users/{userId}/events", null, parameters);
     }
 
-    public ResponseEntity<Object> findEventsByUser(String text, Long categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size) {
+    public ResponseEntity<Object> findEventsByUser(String text, Long categories, Boolean paid, String start, String end, Boolean onlyAvailable, String sort, Integer from, Integer size) {
+        LocalDateTime rangeStart;
+        if (start.equals(" ")) rangeStart = LocalDateTime.now();
+        else rangeStart = LocalDateTime.parse(start, formatter);
+        LocalDateTime rangeEnd = LocalDateTime.parse(end, formatter);
         Map<String, Object> parameters = Map.of("text", text, "categories", categories, "paid", paid, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "onlyAvailable", onlyAvailable, "sort", sort, "from", from, "size", size);
         return get("/events?text={text}&categories={categories}&paid={paid}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&onlyAvailable={onlyAvailable}&sort={sort}&from={from}&size={size}", null, parameters);
     }

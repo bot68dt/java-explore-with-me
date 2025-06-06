@@ -40,38 +40,29 @@ public class EventController {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
         log.info("Request to get published event with ID {} received.", id);
-        StatisticsDto statisticsDto = new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        LinkedHashMap<String, Object> statisticsDtoWithHits = LinkedHashMap.class.cast(statisticsClient.addUri(statisticsDto).getBody());
-        Integer hits = (Integer) statisticsDtoWithHits.get("unique");
-        return eventClient.getPublishedEventById(id, hits);
+        Integer views = (Integer) LinkedHashMap.class.cast(statisticsClient.addUri(new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))).getBody()).get("unique");
+        return eventClient.getPublishedEventById(id, views);
     }
 
     @GetMapping("/users/{userId}/events")
-    public ResponseEntity<Object> getEvents(@Valid @PathVariable long userId, @Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @Valid @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getEvents(@Valid @PathVariable long userId, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get events of the user received.");
         return eventClient.getAllUserEvents(userId, from, size);
     }
 
     @GetMapping("/admin/events")
-    public ResponseEntity<Object> findEventsByAdmin(@Valid @RequestParam(name = "users", defaultValue = "0") Long users, @Valid @RequestParam(name = "states", defaultValue = "0") String states, @Valid @RequestParam(name = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(name = "rangeStart", defaultValue = "2022-01-06 00:00:00") String rangeStart, @Valid @RequestParam(name = "rangeEnd", defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @Valid @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> findEventsByAdmin(@Valid @RequestParam(defaultValue = "0") Long users, @Valid @RequestParam(defaultValue = "0") String states, @Valid @RequestParam(defaultValue = "0") Long categories, @Valid @RequestParam(defaultValue = "2022-01-06 00:00:00") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get events by Admin received.");
-        LocalDateTime startDecoded = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime endDecoded = LocalDateTime.parse(rangeEnd, formatter);
-        return adminEventClient.findEventsByAdmin(users, states, categories, startDecoded, endDecoded, from, size);
+        return adminEventClient.findEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @GetMapping("/events")
-    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(required = false, name = "text", defaultValue = " ") String text, @Valid @RequestParam(required = false, name = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(required = false, name = "paid", defaultValue = "0") Boolean paid, @Valid @RequestParam(required = false, name = "rangeStart", defaultValue = " ") String rangeStart, @Valid @RequestParam(required = false, name = "rangeEnd", defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(required = false, name = "onlyAvailable", defaultValue = "1") Boolean onlyAvailable, @Valid @RequestParam(required = false, name = "sort", defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @Valid @RequestParam(required = false, name = "size", defaultValue = "10") Integer size, HttpServletRequest request) {
+    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(defaultValue = " ") String text, @Valid @RequestParam(defaultValue = "0") Long categories, @Valid @RequestParam(defaultValue = "0") Boolean paid, @Valid @RequestParam(defaultValue = " ") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "1") Boolean onlyAvailable, @Valid @RequestParam(defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
         log.info("Request to get events by User received {}.", text);
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
-        LocalDateTime startDecoded;
-        if (rangeStart.equals(" ")) startDecoded = LocalDateTime.now();
-        else startDecoded = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime endDecoded = LocalDateTime.parse(rangeEnd, formatter);
-        StatisticsDto statisticsDto = new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        statisticsClient.addUri(statisticsDto).getBody();
-        return eventClient.findEventsByUser(text, categories, paid, startDecoded, endDecoded, onlyAvailable, sort, from, size);
+        statisticsClient.addUri(new StatisticsDto(null, "main-server-app", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))).getBody();
+        return eventClient.findEventsByUser(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}")

@@ -1,17 +1,14 @@
 package ru.practicum.explore.user.controller;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.practicum.explore.global.service.ExchangeService;
 import ru.practicum.explore.user.dto.*;
 import ru.practicum.explore.user.service.UserService;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
@@ -38,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/users")
-    public ResponseEntity<Collection<UserDto>> getUsers(@RequestParam(required = false, name = "ids") List<Long> ids, @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Collection<UserDto>> getUsers(@RequestParam(required = false) List<Long> ids, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get users received.");
         return ResponseEntity.ok().body(userService.getAllUsers(ids, from, size));
     }
@@ -63,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/requests")
-    public ResponseEntity<RequestDto> createRequest(@PathVariable long userId, @RequestParam(required = false, name = "eventId", defaultValue = "0") long eventId) {
+    public ResponseEntity<RequestDto> createRequest(@PathVariable long userId, @RequestParam(defaultValue = "0") long eventId) {
         log.info("Request to create new request from user with ID received: {}", userId);
         RequestDto request = userService.createRequest(userId, eventId);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(request.getId()).toUri();
@@ -75,14 +72,8 @@ public class UserController {
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) throws IOException {
         log.info("Request to create new user received: {}", userDto);
         UserDto user = userService.createUser(userDto);
-        ObjectMapper objMapper = new ObjectMapper();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        JsonGenerator jsonGenerator = objMapper.getFactory().createGenerator(byteArrayOutputStream);
-        objMapper.writeValue(jsonGenerator, user);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(byteArrayOutputStream.size()));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
         log.info("New user created with ID {}", user.getId());
-        return ResponseEntity.created(location).headers(httpHeaders).body(user);
+        return ResponseEntity.created(location).headers(ExchangeService.exchange(user)).body(user);
     }
 }

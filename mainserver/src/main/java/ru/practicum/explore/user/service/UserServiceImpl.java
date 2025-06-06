@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
+import ru.practicum.explore.global.dto.Statuses;
 import ru.practicum.explore.user.dto.ChangedStatusOfRequestsDto;
 import ru.practicum.explore.user.dto.RequestDto;
 import ru.practicum.explore.user.dto.ResponseInformationAboutRequests;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
             Optional<Request> request = requestRepository.findById(requestId);
             if (request.isPresent()) {
                 Request canceledRequest = request.get();
-                canceledRequest.setStatus("CANCELED");
+                canceledRequest.setStatus(Statuses.CANCELED.name());
                 return UserMapperNew.mapToRequestDto(requestRepository.saveAndFlush(canceledRequest));
             } else throw new EntityNotFoundException();
         } else throw new EntityNotFoundException();
@@ -77,18 +78,18 @@ public class UserServiceImpl implements UserService {
         Optional<Event> event = eventRepository.findById(eventId);
         Optional<User> user = userRepository.findById(userId);
         Optional<Request> request1 = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals("PUBLISHED")) || (event.isPresent() && Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0)))
+        if (request1.isPresent() || (event.isPresent() && event.get().getInitiator().getId().equals(userId)) || (event.isPresent() && !event.get().getState().equals(Statuses.PUBLISHED.name())) || (event.isPresent() && Long.valueOf(event.get().getParticipantLimit()).equals(event.get().getConfirmedRequests()) && !event.get().getParticipantLimit().equals(0)))
             throw new DataIntegrityViolationException("Data integrity violation exception");
         if (event.isPresent() && event.get().getInitiator().getId() != userId && user.isPresent()) {
             Event event1;
             request.setEventId(event.get().getId());
             request.setRequesterId(user.get().getId());
             if (!event.get().getRequestModeration() || event.get().getParticipantLimit().equals(0)) {
-                request.setStatus("CONFIRMED");
+                request.setStatus(Statuses.CONFIRMED.name());
                 event1 = event.get();
                 event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
                 eventRepository.save(event1);
-            } else request.setStatus("PENDING");
+            } else request.setStatus(Statuses.PENDING.name());
             return UserMapperNew.mapToRequestDto(requestRepository.save(request));
         } else throw new EntityNotFoundException();
     }
@@ -120,10 +121,10 @@ public class UserServiceImpl implements UserService {
                 for (Request request : requests) {
                     if (limit - iterable == 0L)
                         throw new DataIntegrityViolationException("Data integrity violation exception");
-                    if (request.getStatus().equals("PENDING")) {
-                        if (changedStatusOfRequestsDto.getStatus().equals("REJECTED"))
+                    if (request.getStatus().equals(Statuses.PENDING.name())) {
+                        if (changedStatusOfRequestsDto.getStatus().equals(Statuses.REJECTED.name()))
                             request.setStatus(changedStatusOfRequestsDto.getStatus());
-                        if (changedStatusOfRequestsDto.getStatus().equals("CONFIRMED")) {
+                        if (changedStatusOfRequestsDto.getStatus().equals(Statuses.CONFIRMED.name())) {
                             request.setStatus(changedStatusOfRequestsDto.getStatus());
                             event1.setConfirmedRequests(event1.getConfirmedRequests() + 1L);
                             event1 = eventRepository.saveAndFlush(event1);
@@ -135,9 +136,9 @@ public class UserServiceImpl implements UserService {
             } else throw new DataIntegrityViolationException("Data integrity violation exception");
         } else throw new EntityNotFoundException();
         ResponseInformationAboutRequests response = new ResponseInformationAboutRequests();
-        response.setConfirmedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "CONFIRMED")));
-        response.setRejectedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "REJECTED")));
-        response.setPendingRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, "PENDING")));
+        response.setConfirmedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, Statuses.CONFIRMED.name())));
+        response.setRejectedRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, Statuses.REJECTED.name())));
+        response.setPendingRequests(UserMapperNew.mapToRequestDto(requestRepository.findByEventIdAndStatus(eventId, Statuses.PENDING.name())));
         return response;
     }
 }

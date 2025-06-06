@@ -27,7 +27,7 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<Object> getAllCategories(@Valid @RequestParam(required = false, name = "from", defaultValue = "0") Integer from, @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getAllCategories(@Valid @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get all categories received.");
         return categoryClient.getAllCategories(from, size);
     }

@@ -18,11 +18,9 @@ public class CategoryMapperNew {
 
     public static List<CategoryDtoWithId> mapToCategoryDtoWithId(Iterable<Category> categories) {
         List<CategoryDtoWithId> result = new ArrayList<>();
-
         for (Category category : categories) {
             result.add(mapToCategoryDtoWithId(category));
         }
-
         return result;
     }
 

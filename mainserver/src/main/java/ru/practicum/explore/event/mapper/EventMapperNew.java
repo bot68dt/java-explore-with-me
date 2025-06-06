@@ -69,21 +69,17 @@ public class EventMapperNew {
 
     public static List<EventDto> mapToEventDto(Iterable<Event> events) {
         List<EventDto> result = new ArrayList<>();
-
         for (Event event : events) {
             result.add(mapToEventDto(event));
         }
-
         return result;
     }
 
     public static List<ResponseEventDto> mapToResponseEventDto(Iterable<Event> events) {
         List<ResponseEventDto> result = new ArrayList<>();
-
         for (Event event : events) {
             result.add(mapToResponseEventDto(event));
         }
-
         return result;
     }
 

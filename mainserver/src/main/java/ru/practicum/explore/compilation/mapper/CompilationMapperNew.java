@@ -23,11 +23,9 @@ public class CompilationMapperNew {
 
     public static List<CompilationDto> mapToCompilationDto(Iterable<Compilation> compilations) {
         List<CompilationDto> result = new ArrayList<>();
-
         for (Compilation compilation : compilations) {
             result.add(mapToCompilationDto(compilation));
         }
-
         return result;
     }
 

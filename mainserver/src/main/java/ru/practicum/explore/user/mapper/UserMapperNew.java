@@ -16,21 +16,17 @@ public class UserMapperNew {
 
     public static List<RequestDto> mapToRequestDto(Iterable<Request> requests) {
         List<RequestDto> result = new ArrayList<>();
-
         for (Request request : requests) {
             result.add(mapToRequestDto(request));
         }
-
         return result;
     }
 
     public static List<UserDto> mapToUserDto(Iterable<User> users) {
         List<UserDto> result = new ArrayList<>();
-
         for (User user : users) {
             result.add(mapToUserDto(user));
         }
-
         return result;
     }
 

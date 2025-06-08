@@ -1,4 +1,4 @@
-package ru.practicum.explore.client.controller;
+package ru.practicum.statistics.client.controller;
 
 
 import jakarta.persistence.EntityNotFoundException;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.explore.client.dto.ErrorMessage;
-import ru.practicum.explore.client.exception.InternalServerException;
+import ru.practicum.statistics.client.dto.ErrorMessage;
+import ru.practicum.statistics.client.exception.InternalServerException;
 
 import java.util.List;
 

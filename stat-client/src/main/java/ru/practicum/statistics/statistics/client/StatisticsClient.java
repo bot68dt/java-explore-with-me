@@ -1,4 +1,4 @@
-package ru.practicum.explore.statistics.client;
+package ru.practicum.statistics.statistics.client;
 
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +9,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriUtils;
-import ru.practicum.explore.client.client.BaseClient;
-import ru.practicum.explore.statistics.dto.StatisticsDto;
+import ru.practicum.statistics.client.client.BaseClient;
+import ru.practicum.statistics.statistics.dto.StatisticsDto;
 
 import java.util.Map;
 

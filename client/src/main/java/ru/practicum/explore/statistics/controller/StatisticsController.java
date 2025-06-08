@@ -1,4 +1,4 @@
-package ru.practicum.statistics.statistics.controller;
+package ru.practicum.explore.statistics.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.statistics.statistics.client.StatisticsClient;
-import ru.practicum.statistics.statistics.dto.StatisticsDto;
+import ru.practicum.explore.statistics.client.StatisticsClient;
+import ru.practicum.explore.statistics.dto.StatisticsDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

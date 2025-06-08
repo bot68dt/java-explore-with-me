@@ -10,6 +10,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<name>Explore With Me</name>
+
 	<groupId>ru.practicum</groupId>
 	<artifactId>explore-with-me</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -24,7 +26,6 @@
 		<module>client</module>
 		<module>mainserver</module>
 		<module>server</module>
-		<module>stat-client</module>
 	</modules>
 
 	<build>
@@ -166,16 +167,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>9</source>
-					<target>9</target>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 	<profiles>
 		<profile>

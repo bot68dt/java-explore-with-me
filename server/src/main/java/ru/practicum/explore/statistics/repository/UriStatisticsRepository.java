@@ -2,7 +2,6 @@ package ru.practicum.explore.statistics.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 import ru.practicum.explore.statistics.model.Statistics;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@EnableJpaRepositories
 public interface UriStatisticsRepository extends JpaRepository<Statistics, Long> {
 
     Optional<Statistics> findFirst1ByUriAndAppAndIpOrderByHitsDesc(String uri, String app, String ip);

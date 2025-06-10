@@ -1,4 +1,4 @@
-package ru.practicum.explore.client;
+package ru.practicum.explore.client.client;
 
 import java.util.List;
 import java.util.Map;

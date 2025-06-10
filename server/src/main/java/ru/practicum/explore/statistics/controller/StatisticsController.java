@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
@@ -23,20 +24,21 @@ import java.util.List;
 @RequestMapping
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class StatisticsController {
 
     private final UriStatisticsService uriStatisticsService;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/stats")
-    public ResponseEntity<Collection<HitStatisticsDto>> getUriStatistics(@RequestParam(name = "start") byte[] start, @RequestParam(name = "end") byte[] end, @RequestParam(required = false, name = "uris", defaultValue = "") List<String> uris, @RequestParam(required = false, name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Collection<HitStatisticsDto>> getUriStatistics(@RequestParam(name = "start") byte[] start, @RequestParam(name = "end") byte[] end, @RequestParam(name = "uris", defaultValue = "") List<String> uris, @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         List<String> urisDecoded = new ArrayList<>();
         for (String uri : uris)
             urisDecoded.add(UriUtils.decode(uri, "UTF-8"));
         log.info("Request to get statistics of uris {} received.", uris);
         LocalDateTime startDecoded = LocalDateTime.parse(StringUtils.newStringUtf8(start), formatter);
         LocalDateTime endDecoded = LocalDateTime.parse(StringUtils.newStringUtf8(end), formatter);
-        return ResponseEntity.ok().body(uriStatisticsService.getUriStatistics(startDecoded, endDecoded, urisDecoded, unique));
+        return ResponseEntity.ok().body(uriStatisticsService.getDecodedUriStatistics(startDecoded, endDecoded, urisDecoded, unique));
     }
 
     @PostMapping("/hit")

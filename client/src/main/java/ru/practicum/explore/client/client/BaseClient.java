@@ -94,29 +94,9 @@ public class BaseClient {
     private <T> ResponseEntity<Object> makeAndSendRequest(boolean isImage, HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
         if (isImage) {
-            ResponseEntity<ImageDto> shareitServerResponse;
-            try {
-                if (parameters != null) {
-                    shareitServerResponse = rest.exchange(path, method, requestEntity, ImageDto.class, parameters);
-                } else {
-                    shareitServerResponse = rest.exchange(path, method, requestEntity, ImageDto.class);
-                }
-            } catch (HttpStatusCodeException e) {
-                return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
-            }
-            return prepareGatewayResponseImage(shareitServerResponse);
+            return prepareGatewayResponseImage(makeResponse(ImageDto.class, method, path, parameters, rest, requestEntity));
         } else {
-            ResponseEntity<Object> shareitServerResponse;
-            try {
-                if (parameters != null) {
-                    shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
-                } else {
-                    shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
-                }
-            } catch (HttpStatusCodeException e) {
-                return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
-            }
-            return prepareGatewayResponse(shareitServerResponse);
+            return prepareGatewayResponse(makeResponse(Object.class, method, path, parameters, rest, requestEntity));
         }
     }
 
@@ -144,5 +124,19 @@ public class BaseClient {
     private static ResponseEntity<Object> prepareGatewayResponseImage(ResponseEntity<ImageDto> response) {
         ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).contentLength(response.getBody().getImage().length);
         return responseBuilder.body(response.getBody().getImage());
+    }
+
+    private static <T> ResponseEntity<T> makeResponse(Class<T> response, HttpMethod method, String path, @Nullable Map<String, Object> parameters, RestTemplate rest, HttpEntity requestEntity) {
+        ResponseEntity<T> shareitServerResponse;
+        try {
+            if (parameters != null) {
+                shareitServerResponse = rest.exchange(path, method, requestEntity, response, parameters);
+            } else {
+                shareitServerResponse = rest.exchange(path, method, requestEntity, response);
+            }
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAs(response));
+        }
+        return shareitServerResponse;
     }
 }

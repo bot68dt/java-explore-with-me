@@ -14,12 +14,12 @@ import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.event.dto.ResponseEventDto;
 import ru.practicum.explore.event.mapper.EventMapperNew;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.model.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.global.dto.SortValues;
 import ru.practicum.explore.global.dto.Statuses;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.event.repository.LocationRepository;
+import ru.practicum.explore.location.repository.LocationRepository;
 import ru.practicum.explore.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -171,9 +171,23 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }
-        if (sort.equals(SortValues.VIEWS.name())) result.sort(Comparator.comparing(ResponseEventDto::getViews).reversed());
-        if (sort.equals(SortValues.EVENT_DATE.name())) result.sort(Comparator.comparing(ResponseEventDto::getEventDate).reversed());
+        if (sort.equals(SortValues.VIEWS.name()))
+            result.sort(Comparator.comparing(ResponseEventDto::getViews).reversed());
+        if (sort.equals(SortValues.EVENT_DATE.name()))
+            result.sort(Comparator.comparing(ResponseEventDto::getEventDate).reversed());
         return result;
+    }
+
+    @Override
+    @Transactional
+    public EventDto changeLocationOfEventByAdminById(long eventId, long locationId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        Optional<Location> location = locationRepository.findById(locationId);
+        if (event.isPresent() && location.isPresent()) {
+            Event event1 = event.get();
+            event1.setLocation(location.get());
+            return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(event1));
+        } else throw new EntityNotFoundException();
     }
 
     @Override

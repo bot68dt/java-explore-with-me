@@ -1,4 +1,4 @@
-package ru.practicum.explore.event.model;
+package ru.practicum.explore.location.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,10 +13,19 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "lat", nullable = true)
+    @Column(name = "town", nullable = false)
+    private String town;
+
+    @Column(name = "street", nullable = false)
+    private String street;
+
+    @Column(name = "place", nullable = false)
+    private String place;
+
+    @Column(name = "lat", nullable = false)
     private Float lat;
 
-    @Column(name = "lon", nullable = true)
+    @Column(name = "lon", nullable = false)
     private Float lon;
 
     @Override

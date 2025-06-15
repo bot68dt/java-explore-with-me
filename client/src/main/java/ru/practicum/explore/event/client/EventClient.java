@@ -27,17 +27,17 @@ public class EventClient extends BaseClient {
 
     public ResponseEntity<Object> getEventById(Long userId, Long eventId) {
         Map<String, Object> parameters = Map.of("userId", userId, "eventId", eventId);
-        return get("users/{userId}/events/{eventId}", null, parameters);
+        return get(false, "users/{userId}/events/{eventId}", null, parameters);
     }
 
     public ResponseEntity<Object> getPublishedEventById(Long id, Integer views) {
         Map<String, Object> parameters = Map.of("id", id, "views", views);
-        return get("events/{id}?views={views}", null, parameters);
+        return get(false, "events/{id}?views={views}", null, parameters);
     }
 
     public ResponseEntity<Object> getAllUserEvents(Long userId, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("userId", userId, "from", from, "size", size);
-        return get("users/{userId}/events", null, parameters);
+        return get(false, "users/{userId}/events", null, parameters);
     }
 
     public ResponseEntity<Object> findEventsByUser(String text, Long categories, Boolean paid, String start, String end, Boolean onlyAvailable, String sort, Integer from, Integer size) {
@@ -46,7 +46,7 @@ public class EventClient extends BaseClient {
         else rangeStart = LocalDateTime.parse(start, formatter);
         LocalDateTime rangeEnd = LocalDateTime.parse(end, formatter);
         Map<String, Object> parameters = Map.of("text", text, "categories", categories, "paid", paid, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "onlyAvailable", onlyAvailable, "sort", sort, "from", from, "size", size);
-        return get("/events?text={text}&categories={categories}&paid={paid}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&onlyAvailable={onlyAvailable}&sort={sort}&from={from}&size={size}", null, parameters);
+        return get(false, "/events?text={text}&categories={categories}&paid={paid}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&onlyAvailable={onlyAvailable}&sort={sort}&from={from}&size={size}", null, parameters);
     }
 
     public ResponseEntity<Object> changeEvent(Long userId, Long eventId, PatchEventDto eventDto) {

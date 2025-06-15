@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import ru.practicum.explore.location.dto.LocationDto;
 
 import java.time.LocalDateTime;
 

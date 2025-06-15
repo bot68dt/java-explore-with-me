@@ -22,11 +22,11 @@ public class CategoryClient extends BaseClient {
 
     public ResponseEntity<Object> getCategory(Long catId) {
         Map<String, Object> parameters = Map.of("catId", catId);
-        return get("/{catId}", null, parameters);
+        return get(false, "/{catId}", null, parameters);
     }
 
     public ResponseEntity<Object> getAllCategories(Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("from", from, "size", size);
-        return get("?from={from}&size={size}", null, parameters);
+        return get(false, "?from={from}&size={size}", null, parameters);
     }
 }

@@ -25,7 +25,7 @@ public class StatisticsClient extends BaseClient {
 
     public ResponseEntity<Object> getUris(String start, String end, String uris, boolean unique) {
         Map<String, Object> parameters = Map.of("start", StringUtils.getBytesUtf8(start), "end", StringUtils.getBytesUtf8(end), "uris", UriUtils.encodePath(uris, "UTF-8"), "unique", unique);
-        return get("stats?start={start}&end={end}&uris={uris}&unique={unique}", null, parameters);
+        return get(false, "stats?start={start}&end={end}&uris={uris}&unique={unique}", null, parameters);
     }
 
     public ResponseEntity<Object> addUri(StatisticsDto requestDto) {

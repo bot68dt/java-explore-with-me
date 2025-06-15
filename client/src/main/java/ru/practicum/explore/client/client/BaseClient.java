@@ -1,34 +1,46 @@
 package ru.practicum.explore.client.client;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.explore.location.dto.ImageDto;
 
 public class BaseClient {
     protected final RestTemplate rest;
 
     public BaseClient(RestTemplate rest) {
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+        converter.setPrettyPrint(true);
+        messageConverters.add(converter);
+        rest.setMessageConverters(messageConverters);
         this.rest = rest;
     }
 
-    protected ResponseEntity<Object> get(String path) {
-        return get(path, null, null);
+    protected ResponseEntity<Object> get(boolean isImage, String path) {
+        return get(isImage, path, null, null);
     }
 
-    protected ResponseEntity<Object> get(String path, long userId) {
-        return get(path, userId, null);
+    protected ResponseEntity<Object> get(boolean isImage, String path, long userId) {
+        return get(isImage, path, userId, null);
     }
 
-    protected ResponseEntity<Object> get(String path, Long userId, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, userId, parameters, null);
+    protected ResponseEntity<Object> get(boolean isImage, String path, Long userId, @Nullable Map<String, Object> parameters) {
+        return makeAndSendRequest(isImage, HttpMethod.GET, path, userId, parameters, null);
+    }
+
+    protected <T> ResponseEntity<Object> get(boolean isImage, String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
+        return makeAndSendRequest(isImage, HttpMethod.GET, path, userId, parameters, body);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
@@ -40,7 +52,7 @@ public class BaseClient {
     }
 
     protected <T> ResponseEntity<Object> post(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
-        return makeAndSendRequest(HttpMethod.POST, path, userId, parameters, body);
+        return makeAndSendRequest(false, HttpMethod.POST, path, userId, parameters, body);
     }
 
     protected <T> ResponseEntity<Object> put(String path, long userId, T body) {
@@ -48,7 +60,7 @@ public class BaseClient {
     }
 
     protected <T> ResponseEntity<Object> put(String path, long userId, @Nullable Map<String, Object> parameters, T body) {
-        return makeAndSendRequest(HttpMethod.PUT, path, userId, parameters, body);
+        return makeAndSendRequest(false, HttpMethod.PUT, path, userId, parameters, body);
     }
 
     protected <T> ResponseEntity<Object> patch(String path, T body) {
@@ -64,7 +76,7 @@ public class BaseClient {
     }
 
     protected <T> ResponseEntity<Object> patch(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
-        return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, body);
+        return makeAndSendRequest(false, HttpMethod.PATCH, path, userId, parameters, body);
     }
 
     protected ResponseEntity<Object> delete(String path) {
@@ -76,23 +88,16 @@ public class BaseClient {
     }
 
     protected ResponseEntity<Object> delete(String path, Long userId, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.DELETE, path, userId, parameters, null);
+        return makeAndSendRequest(false, HttpMethod.DELETE, path, userId, parameters, null);
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
+    private <T> ResponseEntity<Object> makeAndSendRequest(boolean isImage, HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
-
-        ResponseEntity<Object> shareitServerResponse;
-        try {
-            if (parameters != null) {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
-            } else {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
-            }
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+        if (isImage) {
+            return prepareGatewayResponseImage(makeResponse(ImageDto.class, method, path, parameters, rest, requestEntity));
+        } else {
+            return prepareGatewayResponse(makeResponse(Object.class, method, path, parameters, rest, requestEntity));
         }
-        return prepareGatewayResponse(shareitServerResponse);
     }
 
     private HttpHeaders defaultHeaders(Long userId) {
@@ -109,13 +114,29 @@ public class BaseClient {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }
-
         ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(response.getStatusCode());
-
         if (response.hasBody()) {
             return responseBuilder.body(response.getBody());
         }
-
         return responseBuilder.build();
+    }
+
+    private static ResponseEntity<Object> prepareGatewayResponseImage(ResponseEntity<ImageDto> response) {
+        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).contentLength(response.getBody().getImage().length);
+        return responseBuilder.body(response.getBody().getImage());
+    }
+
+    private static <T> ResponseEntity<T> makeResponse(Class<T> response, HttpMethod method, String path, @Nullable Map<String, Object> parameters, RestTemplate rest, HttpEntity requestEntity) {
+        ResponseEntity<T> shareitServerResponse;
+        try {
+            if (parameters != null) {
+                shareitServerResponse = rest.exchange(path, method, requestEntity, response, parameters);
+            } else {
+                shareitServerResponse = rest.exchange(path, method, requestEntity, response);
+            }
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAs(response));
+        }
+        return shareitServerResponse;
     }
 }

@@ -23,12 +23,12 @@ public class UserClient extends BaseClient {
 
     public ResponseEntity<Object> getUserRequests(Long userId) {
         Map<String, Object> parameters = Map.of("userId", userId);
-        return get("/{userId}/requests", null, parameters);
+        return get(false, "/{userId}/requests", null, parameters);
     }
 
     public ResponseEntity<Object> getEventRequests(Long userId, Long eventId) {
         Map<String, Object> parameters = Map.of("userId", userId, "eventId", eventId);
-        return get("/{userId}/events/{eventId}/requests", null, parameters);
+        return get(false, "/{userId}/events/{eventId}/requests", null, parameters);
     }
 
     public ResponseEntity<Object> cancelRequest(Long userId, Long requestId) {

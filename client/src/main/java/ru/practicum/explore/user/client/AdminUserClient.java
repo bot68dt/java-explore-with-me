@@ -23,7 +23,7 @@ public class AdminUserClient extends BaseClient {
 
     public ResponseEntity<Object> getAllUsers(Long ids, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("ids", ids, "from", from, "size", size);
-        return get("?ids={ids}&from={from}&size={size}", null, parameters);
+        return get(false, "?ids={ids}&from={from}&size={size}", null, parameters);
     }
 
     public ResponseEntity<Object> deleteUser(long userId) {

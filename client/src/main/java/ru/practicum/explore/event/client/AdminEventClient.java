@@ -28,7 +28,7 @@ public class AdminEventClient extends BaseClient {
         LocalDateTime rangeStart = LocalDateTime.parse(start, formatter);
         LocalDateTime rangeEnd = LocalDateTime.parse(end, formatter);
         Map<String, Object> parameters = Map.of("users", users, "states", states, "categories", categories, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "from", from, "size", size);
-        return get("/events?users={users}&states={states}&categories={categories}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&from={from}&size={size}", null, parameters);
+        return get(false, "/events?users={users}&states={states}&categories={categories}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&from={from}&size={size}", null, parameters);
     }
 
     public ResponseEntity<Object> changeEventByAdmin(long eventId, PatchEventDto eventDto) {

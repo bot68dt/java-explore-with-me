@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.category.dto.CategoryDtoWithId;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.EventDto;
-import ru.practicum.explore.event.dto.LocationDto;
+import ru.practicum.explore.location.dto.LocationDto;
 import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.event.dto.ResponseEventDto;
 import ru.practicum.explore.user.dto.*;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.model.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
 
 import java.util.ArrayList;

@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.global.dto.Statuses;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;

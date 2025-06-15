@@ -14,12 +14,12 @@ import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.event.dto.ResponseEventDto;
 import ru.practicum.explore.event.mapper.EventMapperNew;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.model.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.global.dto.SortValues;
 import ru.practicum.explore.global.dto.Statuses;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.event.repository.LocationRepository;
+import ru.practicum.explore.location.repository.LocationRepository;
 import ru.practicum.explore.user.repository.UserRepository;
 
 import java.time.LocalDateTime;

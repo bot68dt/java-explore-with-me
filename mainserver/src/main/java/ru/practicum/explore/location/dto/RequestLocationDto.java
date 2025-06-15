@@ -11,8 +11,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestLocationDto {
-    private List<String> Town;
-    private List<String> Street;
-    private List<String> Place;
-    private Map<Float, Float> LatLon;
+    private List<String> town;
+    private List<String> street;
+    private List<String> place;
+    private Map<Float, Float> latLon;
 }

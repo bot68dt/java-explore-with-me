@@ -11,8 +11,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestLocationDto {
-    private List<String> Town = List.of("null");
-    private List<String> Street = List.of("null");
-    private List<String> Place = List.of("null");
-    private Map<Float, Float> LatLon = Map.of(0f, 0f);
+    private List<String> town = List.of("null");
+    private List<String> street = List.of("null");
+    private List<String> place = List.of("null");
+    private Map<Float, Float> latLon = Map.of(0f, 0f);
 }

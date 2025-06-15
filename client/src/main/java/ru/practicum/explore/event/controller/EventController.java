@@ -77,6 +77,12 @@ public class EventController {
         return adminEventClient.changeEventByAdmin(eventId, eventDto);
     }
 
+    @PatchMapping("/admin/events/{eventId}/location/{locationId}")
+    public ResponseEntity<Object> changeLocationOfEventByAdminById(@Valid @PathVariable long eventId, @Valid @PathVariable long locationId) {
+        log.info("Request to change location of the event with ID {} received.", eventId);
+        return adminEventClient.changeLocationOfEventByAdminById(eventId, locationId);
+    }
+
     @PostMapping("/users/{userId}/events")
     public ResponseEntity<Object> createEvent(@Valid @PathVariable long userId, @Valid @RequestBody EventDto newEventDto) {
         log.info("Request to create new event received: {}", newEventDto);

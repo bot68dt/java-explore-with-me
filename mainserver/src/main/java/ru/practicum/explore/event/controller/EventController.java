@@ -71,6 +71,12 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.changeEventByAdmin(eventId, patchEventDto));
     }
 
+    @PatchMapping("/admin/events/{eventId}/location/{locationId}")
+    public ResponseEntity<EventDto> changeLocationOfEventByAdminById(@PathVariable long eventId, @PathVariable long locationId) {
+        log.info("Request to change location of the event with ID {} received.", eventId);
+        return ResponseEntity.ok().body(eventService.changeLocationOfEventByAdminById(eventId, locationId));
+    }
+
     @PostMapping("/users/{userId}/events")
     public ResponseEntity<EventDto> createEvent(@PathVariable long userId, @RequestBody PatchEventDto newEventDto) throws IOException {
         log.info("Request to create new event received: {}", newEventDto);

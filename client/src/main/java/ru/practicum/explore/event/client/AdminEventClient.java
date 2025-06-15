@@ -35,4 +35,9 @@ public class AdminEventClient extends BaseClient {
         Map<String, Object> parameters = Map.of("eventId", eventId);
         return patch("/events/{eventId}", null, parameters, eventDto);
     }
+
+    public ResponseEntity<Object> changeLocationOfEventByAdminById(long eventId, long locationId) {
+        Map<String, Object> parameters = Map.of("eventId", eventId, "locationId", locationId);
+        return patch("/events/{eventId}/location/{locationId}", null, parameters, null);
+    }
 }

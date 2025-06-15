@@ -171,9 +171,23 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }
-        if (sort.equals(SortValues.VIEWS.name())) result.sort(Comparator.comparing(ResponseEventDto::getViews).reversed());
-        if (sort.equals(SortValues.EVENT_DATE.name())) result.sort(Comparator.comparing(ResponseEventDto::getEventDate).reversed());
+        if (sort.equals(SortValues.VIEWS.name()))
+            result.sort(Comparator.comparing(ResponseEventDto::getViews).reversed());
+        if (sort.equals(SortValues.EVENT_DATE.name()))
+            result.sort(Comparator.comparing(ResponseEventDto::getEventDate).reversed());
         return result;
+    }
+
+    @Override
+    @Transactional
+    public EventDto changeLocationOfEventByAdminById(long eventId, long locationId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        Optional<Location> location = locationRepository.findById(locationId);
+        if (event.isPresent() && location.isPresent()) {
+            Event event1 = event.get();
+            event1.setLocation(location.get());
+            return EventMapperNew.mapToEventDto(eventRepository.saveAndFlush(event1));
+        } else throw new EntityNotFoundException();
     }
 
     @Override

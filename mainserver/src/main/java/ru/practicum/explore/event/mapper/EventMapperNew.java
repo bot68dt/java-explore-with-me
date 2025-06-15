@@ -34,6 +34,10 @@ public class EventMapperNew {
 
     public static LocationDto mapToLocationDto(Location location) {
         LocationDto locationDto = new LocationDto();
+        locationDto.setId(location.getId());
+        locationDto.setTown(location.getTown());
+        locationDto.setPlace(location.getPlace());
+        locationDto.setStreet(location.getStreet());
         locationDto.setLat(location.getLat());
         locationDto.setLon(location.getLon());
         return locationDto;
@@ -41,6 +45,9 @@ public class EventMapperNew {
 
     public static Location mapToLocation(LocationDto locationDto) {
         Location location = new Location();
+        location.setTown(locationDto.getTown());
+        location.setStreet(locationDto.getStreet());
+        location.setPlace(locationDto.getPlace());
         location.setLat(locationDto.getLat());
         location.setLon(locationDto.getLon());
         return location;

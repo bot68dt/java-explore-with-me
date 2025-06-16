@@ -17,6 +17,7 @@ import ru.practicum.explore.statistics.dto.StatisticsDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -51,13 +52,13 @@ public class EventController {
     }
 
     @GetMapping("/admin/events")
-    public ResponseEntity<Object> findEventsByAdmin(@Valid @RequestParam(defaultValue = "0") Long users, @Valid @RequestParam(defaultValue = "0") String states, @Valid @RequestParam(defaultValue = "0") Long categories, @Valid @RequestParam(defaultValue = "2022-01-06 00:00:00") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> findEventsByAdmin(@Valid @RequestParam(value = "users", defaultValue = "0") Long users, @Valid @RequestParam(value = "states", defaultValue = "") String states, @Valid @RequestParam(value = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(defaultValue = "2022-01-06 00:00:00") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get events by Admin received.");
         return adminEventClient.findEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @GetMapping("/events")
-    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(defaultValue = " ") String text, @Valid @RequestParam(defaultValue = "0") Long categories, @Valid @RequestParam(defaultValue = "0") Boolean paid, @Valid @RequestParam(defaultValue = " ") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "1") Boolean onlyAvailable, @Valid @RequestParam(defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
+    public ResponseEntity<Object> findEventsByUser(@Valid @RequestParam(value = "text", defaultValue = "") String text, @Valid @RequestParam(value = "categories", defaultValue = "0") Long categories, @Valid @RequestParam(value = "paid", defaultValue = "0") Boolean paid, @Valid @RequestParam(defaultValue = " ") String rangeStart, @Valid @RequestParam(defaultValue = "2097-09-06 00:00:00") String rangeEnd, @Valid @RequestParam(defaultValue = "0") Boolean onlyAvailable, @Valid @RequestParam(defaultValue = "EVENT_DATE") String sort, @Valid @RequestParam(defaultValue = "0") Integer from, @Valid @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
         log.info("Request to get events by User received {}.", text);
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());

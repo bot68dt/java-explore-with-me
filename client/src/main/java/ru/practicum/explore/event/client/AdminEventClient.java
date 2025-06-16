@@ -12,6 +12,8 @@ import ru.practicum.explore.event.dto.PatchEventDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,10 +26,10 @@ public class AdminEventClient extends BaseClient {
         super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX)).requestFactory(() -> new HttpComponentsClientHttpRequestFactory()).build());
     }
 
-    public ResponseEntity<Object> findEventsByAdmin(long users, String states, long categories, String start, String end, Integer from, Integer size) {
+    public ResponseEntity<Object> findEventsByAdmin(Long users, String states, Long categories, String start, String end, Integer from, Integer size) {
         LocalDateTime rangeStart = LocalDateTime.parse(start, formatter);
         LocalDateTime rangeEnd = LocalDateTime.parse(end, formatter);
-        Map<String, Object> parameters = Map.of("users", users, "states", states, "categories", categories, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "from", from, "size", size);
+        Map<String, Object> parameters = Map.of("users", users, "states", states,"categories", categories, "rangeStart", rangeStart, "rangeEnd", rangeEnd, "from", from, "size", size);
         return get(false, "/events?users={users}&states={states}&categories={categories}&rangeStart={rangeStart}&rangeEnd={rangeEnd}&from={from}&size={size}", null, parameters);
     }
 

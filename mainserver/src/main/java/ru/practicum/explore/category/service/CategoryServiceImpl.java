@@ -29,8 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDtoWithId getCategory(long catId) {
         Optional<Category> category = categoryRepository.findById(catId);
-        if (category.isPresent()) return CategoryMapperNew.mapToCategoryDtoWithId(category.get());
-        else throw new EntityNotFoundException();
+        if (category.isPresent()) {
+            return CategoryMapperNew.mapToCategoryDtoWithId(category.get());
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
@@ -45,25 +48,33 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> category = categoryRepository.findById(catId);
         Optional<Category> name = categoryRepository.findByName(categoryDto.getName());
         if (category.isPresent()) {
-            if (name.isPresent() && name.get().getId() != (catId))
+            if (name.isPresent() && name.get().getId() != (catId)) {
                 throw new DataIntegrityViolationException("Data integrity violation exception");
+            }
             return CategoryMapperNew.mapToCategoryDtoWithId(categoryRepository.saveAndFlush(CategoryMapperNew.mapToCategory(category.get(), categoryDto)));
-        } else throw new EntityNotFoundException();
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
     @Transactional
     public void deleteCategory(long catId) {
         Optional<Event> event = eventRepository.findByCategoryId(catId);
-        if (event.isPresent()) throw new DataIntegrityViolationException("Data integrity violation exception");
-        else categoryRepository.deleteById(catId);
+        if (event.isPresent()) {
+            throw new DataIntegrityViolationException("Data integrity violation exception");
+        } else {
+            categoryRepository.deleteById(catId);
+        }
     }
 
     @Override
     @Transactional
     public CategoryDtoWithId createCategory(CategoryDto categoryDto) {
         Optional<Category> name = categoryRepository.findByName(categoryDto.getName());
-        if (name.isPresent()) throw new DataIntegrityViolationException("Data integrity violation exception");
+        if (name.isPresent()) {
+            throw new DataIntegrityViolationException("Data integrity violation exception");
+        }
         return CategoryMapperNew.mapToCategoryDtoWithId(categoryRepository.saveAndFlush(CategoryMapperNew.mapToCategory(categoryDto)));
     }
 }

@@ -48,13 +48,13 @@ public class EventController {
     }
 
     @GetMapping("/admin/events")
-    public ResponseEntity<Collection<EventDto>> findEventsByAdmin(@RequestParam List<Long> users, @RequestParam List<String> states, @RequestParam List<Long> categories, @PastOrPresent @RequestParam LocalDateTime rangeStart, @FutureOrPresent @RequestParam LocalDateTime rangeEnd, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<Collection<EventDto>> findEventsByAdmin(@RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<String> states, @RequestParam(required = false) List<Long> categories, @PastOrPresent @RequestParam LocalDateTime rangeStart, @FutureOrPresent @RequestParam LocalDateTime rangeEnd, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get events by Admin received.");
         return ResponseEntity.ok().body(eventService.findEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size));
     }
 
     @GetMapping("/events")
-    public ResponseEntity<Collection<ResponseEventDto>> findEventsByUser(@RequestParam(required = false) String text, @RequestParam(required = false) List<Long> categories, @RequestParam(required = false) Boolean paid, @PastOrPresent @RequestParam(required = false) LocalDateTime rangeStart, @FutureOrPresent @RequestParam(required = false) LocalDateTime rangeEnd, @RequestParam(required = false) Boolean onlyAvailable, @RequestParam(required = false) String sort, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<Collection<ResponseEventDto>> findEventsByUser(@RequestParam(required = false) List<String> text, @RequestParam(required = false) List<Long> categories, @RequestParam(required = false) Boolean paid, @PastOrPresent @RequestParam(required = false) LocalDateTime rangeStart, @FutureOrPresent @RequestParam(required = false) LocalDateTime rangeEnd, @RequestParam(required = false) Boolean onlyAvailable, @RequestParam(required = false) String sort, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to get events by User received.");
         return ResponseEntity.ok().body(eventService.findEventsByUser(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size));
     }

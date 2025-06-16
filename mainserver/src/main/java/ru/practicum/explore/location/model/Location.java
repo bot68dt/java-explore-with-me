@@ -1,12 +1,14 @@
 package ru.practicum.explore.location.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "locations")
-@Data
+@Getter
+@Setter
 @ToString
 public class Location {
     @Id

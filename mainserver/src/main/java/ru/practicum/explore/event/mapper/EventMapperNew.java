@@ -105,16 +105,30 @@ public class EventMapperNew {
     }
 
     public static Event changeEvent(Event event, PatchEventDto patchEventDto) {
-        if (patchEventDto.getAnnotation() != null) event.setAnnotation(patchEventDto.getAnnotation());
-        if (patchEventDto.getDescription() != null) event.setDescription(patchEventDto.getDescription());
-        if (patchEventDto.getEventDate() != null) event.setEventDate(patchEventDto.getEventDate());
-        if (patchEventDto.getPaid() != null) event.setPaid(patchEventDto.getPaid());
-        if (patchEventDto.getParticipantLimit() != null && patchEventDto.getParticipantLimit() >= 0)
+        if (patchEventDto.getAnnotation() != null) {
+            event.setAnnotation(patchEventDto.getAnnotation());
+        }
+        if (patchEventDto.getDescription() != null) {
+            event.setDescription(patchEventDto.getDescription());
+        }
+        if (patchEventDto.getEventDate() != null) {
+            event.setEventDate(patchEventDto.getEventDate());
+        }
+        if (patchEventDto.getPaid() != null) {
+            event.setPaid(patchEventDto.getPaid());
+        }
+        if (patchEventDto.getParticipantLimit() != null && patchEventDto.getParticipantLimit() >= 0) {
             event.setParticipantLimit(patchEventDto.getParticipantLimit());
-        if (patchEventDto.getRequestModeration() != null)
+        }
+        if (patchEventDto.getRequestModeration() != null) {
             event.setRequestModeration(patchEventDto.getRequestModeration());
-        if (patchEventDto.getStateAction() != null) event.setState(patchEventDto.getStateAction());
-        if (patchEventDto.getTitle() != null) event.setTitle(patchEventDto.getTitle());
+        }
+        if (patchEventDto.getStateAction() != null) {
+            event.setState(patchEventDto.getStateAction());
+        }
+        if (patchEventDto.getTitle() != null) {
+            event.setTitle(patchEventDto.getTitle());
+        }
         return event;
     }
 }

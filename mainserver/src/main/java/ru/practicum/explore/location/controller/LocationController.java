@@ -9,9 +9,11 @@ import ru.practicum.explore.location.dto.ImageDto;
 import ru.practicum.explore.location.dto.LocationDto;
 import ru.practicum.explore.location.dto.LocationWithRadiusDto;
 import ru.practicum.explore.location.dto.RequestLocationDto;
+import ru.practicum.explore.location.mapper.LocationListMapper;
+import ru.practicum.explore.location.mapper.LocationMapper;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.location.service.LocationService;
-import ru.practicum.explore.location.mapper.LocationMapper;
+import ru.practicum.explore.location.mapper.SpecialLocationMapper;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LocationController {
     private final LocationService adLocationService;
+    private final LocationMapper locationMapper;
+    private final LocationListMapper locationListMapper;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/admin/locations")
@@ -39,7 +43,7 @@ public class LocationController {
         Location adLocation = adLocationService.addAdLocation(adLocationDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(adLocation.getId()).toUri();
         log.info("New uriStatistics created with ID {}", adLocation.getId());
-        return ResponseEntity.created(location).body(LocationMapper.mapToAdLocationDto(adLocation));
+        return ResponseEntity.created(location).body(locationMapper.toDTO(adLocation));
     }
 
     @DeleteMapping("/admin/location/{id}")
@@ -70,19 +74,19 @@ public class LocationController {
     @GetMapping("/admin/locations/map/all")
     public ResponseEntity<ImageDto> getLocationsOnMap(@RequestParam Integer from, @RequestParam Integer size) throws IOException {
         log.info("Request to get locations received.");
-        return ResponseEntity.ok().body(new ImageDto(LocationMapper.getMap(LocationMapper.mapToAdLocation(adLocationService.getLocations(from, size)))));
+        return ResponseEntity.ok().body(new ImageDto(SpecialLocationMapper.getMap(locationListMapper.toModelList(adLocationService.getLocations(from, size)))));
     }
 
     @GetMapping("/admin/locations/map/{id}")
     public ResponseEntity<ImageDto> getLocationOnMap(@PathVariable long id) throws IOException {
         log.info("Request to get location by id:{} received.", id);
-        return ResponseEntity.ok().body(new ImageDto(LocationMapper.getMap(List.of(LocationMapper.mapToAdLocation(adLocationService.getLocationById(id))))));
+        return ResponseEntity.ok().body(new ImageDto(SpecialLocationMapper.getMap(List.of(locationMapper.toModel(adLocationService.getLocationById(id))))));
     }
 
     @GetMapping("/admin/locations/map/selected")
     public ResponseEntity<Object> getSelectedLocationsOnMap(@RequestBody RequestLocationDto requestAdLocationDto, @RequestParam Integer from, @RequestParam Integer size) throws IOException {
         log.info("Request to get selected locations received.");
-        return ResponseEntity.ok().body(new ImageDto(LocationMapper.getMap(LocationMapper.mapToAdLocation(adLocationService.findAdLocations(requestAdLocationDto, from, size)))));
+        return ResponseEntity.ok().body(new ImageDto(SpecialLocationMapper.getMap(locationListMapper.toModelList(adLocationService.findAdLocations(requestAdLocationDto, from, size)))));
     }
 
     @GetMapping("/admin/locations/radius")
@@ -94,6 +98,6 @@ public class LocationController {
     @GetMapping("/admin/locations/map/radius")
     public ResponseEntity<Object> findLocationsInRadiusOnMap(@RequestParam float lat, @RequestParam float lon, @RequestParam float radius, @RequestParam Integer from, @RequestParam Integer size) throws IOException {
         log.info("Request to get locations in radius {} on map received.", radius);
-        return ResponseEntity.ok().body(new ImageDto(LocationMapper.getMapWithRadius(lat, lon, adLocationService.findLocationsInRadius(lat, lon, radius, from, size))));
+        return ResponseEntity.ok().body(new ImageDto(SpecialLocationMapper.getMapWithRadius(lat, lon, adLocationService.findLocationsInRadius(lat, lon, radius, from, size))));
     }
 }

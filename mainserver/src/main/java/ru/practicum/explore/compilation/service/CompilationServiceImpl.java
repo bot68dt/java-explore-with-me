@@ -33,8 +33,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto getCompilation(long compId) {
         Optional<Compilation> compilation = compilationRepository.findById(compId);
-        if (compilation.isPresent()) return CompilationMapperNew.mapToCompilationDto(compilation.get());
-        else throw new EntityNotFoundException();
+        if (compilation.isPresent()) {
+            return CompilationMapperNew.mapToCompilationDto(compilation.get());
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
@@ -55,8 +58,9 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto changeCompilation(long compId, RequestCompilationDto requestCompilationDto) {
         Optional<Compilation> compilation = compilationRepository.findById(compId);
         if (compilation.isPresent()) {
-            if (requestCompilationDto.getEvents().size() != eventRepository.findAllById(requestCompilationDto.getEvents()).size())
+            if (requestCompilationDto.getEvents().size() != eventRepository.findAllById(requestCompilationDto.getEvents()).size()) {
                 throw new EntityNotFoundException();
+            }
             Collection<Compilationevents> compilationevents = compilationeventsRepository.findByCompilationId(compId);
             compilationeventsRepository.deleteAll(compilationevents);
             compilationevents = new ArrayList<>();
@@ -80,9 +84,12 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public CompilationDto createCompilation(RequestCompilationDto requestCompilationDto) {
         List<Event> events = eventRepository.findAllById(requestCompilationDto.getEvents());
-        if (requestCompilationDto.getEvents().size() != events.size() && !requestCompilationDto.getEvents().equals(List.of(0L)))
+        if (requestCompilationDto.getEvents().size() != events.size() && !requestCompilationDto.getEvents().equals(List.of(0L))) {
             throw new EntityNotFoundException();
-        if (requestCompilationDto.getTitle().equals("null")) throw new MethodValidationException(MethodValidationResult.emptyResult());
+        }
+        if (requestCompilationDto.getTitle().equals("null")) {
+            throw new MethodValidationException(MethodValidationResult.emptyResult());
+        }
         Compilation compilation = new Compilation();
         compilation = CompilationMapperNew.changeCompilation(compilation, requestCompilationDto);
         compilation.setEvents(events);

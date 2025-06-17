@@ -22,11 +22,11 @@ public class CompilationClient extends BaseClient {
 
     public ResponseEntity<Object> getCompilation(Long compId) {
         Map<String, Object> parameters = Map.of("compId", compId);
-        return get("/{compId}", null, parameters);
+        return get(false, "/{compId}", null, parameters);
     }
 
     public ResponseEntity<Object> getCompilations(String pinned, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of("pinned", pinned, "from", from, "size", size);
-        return get("?pinned={pinned}&from={from}&size={size}", null, parameters);
+        return get(false, "?pinned={pinned}&from={from}&size={size}", null, parameters);
     }
 }

@@ -19,9 +19,11 @@ public interface EventService {
 
     EventDto getPublishedEventById(long eventId, Integer views);
 
-    Collection<ResponseEventDto> findEventsByUser(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
+    Collection<ResponseEventDto> findEventsByUser(List<String> text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
 
     EventDto changeEventByAdmin(long eventId, PatchEventDto patchEventDto);
+
+    EventDto changeLocationOfEventByAdminById(long eventId, long locationId);
 
     Collection<EventDto> findEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 }

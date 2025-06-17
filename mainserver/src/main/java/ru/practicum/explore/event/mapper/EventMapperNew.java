@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.category.dto.CategoryDtoWithId;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.EventDto;
-import ru.practicum.explore.event.dto.LocationDto;
+import ru.practicum.explore.location.dto.LocationDto;
 import ru.practicum.explore.event.dto.PatchEventDto;
 import ru.practicum.explore.event.dto.ResponseEventDto;
 import ru.practicum.explore.user.dto.*;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.model.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
 
 import java.util.ArrayList;
@@ -34,6 +34,10 @@ public class EventMapperNew {
 
     public static LocationDto mapToLocationDto(Location location) {
         LocationDto locationDto = new LocationDto();
+        locationDto.setId(location.getId());
+        locationDto.setTown(location.getTown());
+        locationDto.setPlace(location.getPlace());
+        locationDto.setStreet(location.getStreet());
         locationDto.setLat(location.getLat());
         locationDto.setLon(location.getLon());
         return locationDto;
@@ -41,6 +45,9 @@ public class EventMapperNew {
 
     public static Location mapToLocation(LocationDto locationDto) {
         Location location = new Location();
+        location.setTown(locationDto.getTown());
+        location.setStreet(locationDto.getStreet());
+        location.setPlace(locationDto.getPlace());
         location.setLat(locationDto.getLat());
         location.setLon(locationDto.getLon());
         return location;
@@ -98,16 +105,30 @@ public class EventMapperNew {
     }
 
     public static Event changeEvent(Event event, PatchEventDto patchEventDto) {
-        if (patchEventDto.getAnnotation() != null) event.setAnnotation(patchEventDto.getAnnotation());
-        if (patchEventDto.getDescription() != null) event.setDescription(patchEventDto.getDescription());
-        if (patchEventDto.getEventDate() != null) event.setEventDate(patchEventDto.getEventDate());
-        if (patchEventDto.getPaid() != null) event.setPaid(patchEventDto.getPaid());
-        if (patchEventDto.getParticipantLimit() != null && patchEventDto.getParticipantLimit() >= 0)
+        if (patchEventDto.getAnnotation() != null) {
+            event.setAnnotation(patchEventDto.getAnnotation());
+        }
+        if (patchEventDto.getDescription() != null) {
+            event.setDescription(patchEventDto.getDescription());
+        }
+        if (patchEventDto.getEventDate() != null) {
+            event.setEventDate(patchEventDto.getEventDate());
+        }
+        if (patchEventDto.getPaid() != null) {
+            event.setPaid(patchEventDto.getPaid());
+        }
+        if (patchEventDto.getParticipantLimit() != null && patchEventDto.getParticipantLimit() >= 0) {
             event.setParticipantLimit(patchEventDto.getParticipantLimit());
-        if (patchEventDto.getRequestModeration() != null)
+        }
+        if (patchEventDto.getRequestModeration() != null) {
             event.setRequestModeration(patchEventDto.getRequestModeration());
-        if (patchEventDto.getStateAction() != null) event.setState(patchEventDto.getStateAction());
-        if (patchEventDto.getTitle() != null) event.setTitle(patchEventDto.getTitle());
+        }
+        if (patchEventDto.getStateAction() != null) {
+            event.setState(patchEventDto.getStateAction());
+        }
+        if (patchEventDto.getTitle() != null) {
+            event.setTitle(patchEventDto.getTitle());
+        }
         return event;
     }
 }

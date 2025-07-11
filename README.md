@@ -4,6 +4,7 @@ Diploma project, filling database of the main server (mainserver) with topics - 
 Examples of API requests are provided in two root files:
  - ewm-main-service-spec.json
  - ewm-stats-service-spec.json
+
 and files located in the (postman) folder
 
 https://github.com/bot68dt/java-explore-with-me/pull/4
